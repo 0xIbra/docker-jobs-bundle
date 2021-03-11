@@ -1,0 +1,5 @@
+services:
+  polkovnik.service.docker:
+    class: Polkovnik\DockerJobsBundle\Service\DockerService
+    arguments:
+      - '@service_container'
