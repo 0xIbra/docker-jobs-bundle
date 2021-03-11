@@ -1,5 +1,6 @@
 {
-    "name": "ibra/docker-jobs-bundle",
+    "name": "polkovnik/docker-jobs-bundle",
+    "version": "dev-master",
     "description": "Execute jobs in docker containers.",
     "type": "symfony-bundle",
     "license": "MIT",
