@@ -17,6 +17,6 @@
         }
     },
     "require": {
-        "polkovnik/php-docker-client": "^4.0"
+        "polkovnik/php-docker-client": "1.41.*"
     }
 }

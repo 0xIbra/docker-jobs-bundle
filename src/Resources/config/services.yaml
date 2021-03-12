@@ -1,5 +1,14 @@
 services:
-  polkovnik.service.docker:
+  polkovnik.docker_jobs.service.docker:
+    public: true
     class: Polkovnik\DockerJobsBundle\Service\DockerService
+    arguments:
+      - '@service_container'
+      - '%docker_jobs.docker_unix_socket_path%'
+      - '%docker_jobs.docker_base_uri%'
+
+  polkovnik.docker_jobs.manager.job:
+    public: true
+    class: Polkovnik\DockerJobsBundle\Manager\JobManager
     arguments:
       - '@service_container'
