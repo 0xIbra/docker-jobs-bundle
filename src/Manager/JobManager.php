@@ -55,7 +55,7 @@ class JobManager
     private function getEntrypoint()
     {
         try {
-            $projectDir = $this->container->getParameter('kernel.project_dir');
+            $projectDir = $this->container->getParameter('docker_jobs.docker_working_dir');
             if (!empty($projectDir)) {
                 $consolePath = $projectDir . '/bin/console';
                 if (file_exists($consolePath)) {
@@ -64,7 +64,7 @@ class JobManager
             }
         } catch (\Exception $e) {}
 
-        $rootDir = $this->container->getParameter('kernel.root_dir');
+        $rootDir = $this->container->getParameter('docker_jobs.docker_working_dir');
         $rootDir = realpath($rootDir . '/../');
         $consolePath = $rootDir . '/bin/console';
         if (file_exists($consolePath)) {

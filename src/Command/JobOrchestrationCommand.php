@@ -76,6 +76,17 @@ class JobOrchestrationCommand extends Command
     {
         $this->output = $output;
         $this->checkRequirements();
+
+        try {
+            $this->safeExecute($input, $output);
+        } catch (\Exception $exception) {
+            dump($exception->getMessage());
+            dd($exception->getTraceAsString());
+        }
+    }
+
+    protected function safeExecute(InputInterface $input, OutputInterface $output)
+    {
         $firstTime = true;
 
         while (true) {
@@ -99,23 +110,26 @@ class JobOrchestrationCommand extends Command
 
             $this->updateContainers();
 
-            foreach ($this->runningContainers as $container) {
-                $jobId = (int) $container['Labels']['job_id'];
-                $containerId = $container['Id'];
+            foreach ($this->runningContainers as $containerId) {
+                $container = $this->docker->getClient()->inspectContainer($containerId);
+                $jobId = (int) $container['Config']['Labels']['job_id'];
+
+                /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
 
                 $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
+                $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
                 $job
-                    ->setOutput($containerLogs)
+                    ->setOutput((string) $containerLogs)
+                    ->setErrorOutput((string) $errorLogs)
                     ->setState(BaseJob::STATE_RUNNING)
                 ;
                 $this->em->persist($job);
             }
 
-            foreach($this->stoppedContainers as $container) {
-                $containerId = $container['Id'];
+            foreach($this->stoppedContainers as $containerId) {
                 $container = $this->docker->getClient()->inspectContainer($containerId);
-                $jobId = (int) $container['Labels']['job_id'];
+                $jobId = (int) $container['Config']['Labels']['job_id'];
 
                 /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
@@ -124,21 +138,27 @@ class JobOrchestrationCommand extends Command
                 if ($container['State']['ExitCode'] !== 0) {
                     $state = BaseJob::STATE_FAILED;
                     $job
-                        ->setErrorOutput($container['State']['Error'])
+                        ->setErrorMessage($container['State']['Error'])
                         ->setExitCode($container['State']['ExitCode'])
                     ;
                 }
 
                 $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
+                $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
                 $job
                     ->setState($state)
-                    ->setOutput($containerLogs)
+                    ->setOutput((string) $containerLogs)
+                    ->setErrorOutput((string) $errorLogs)
                 ;
 
-                $this->docker->getClient()->
+                $deletion = $this->docker->getClient()->deleteContainer($containerId);
+                usleep(500000);
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
+                unset($this->runningContainerCount[$containerId]);
+
+                $this->updateCounters();
             }
 
             $this->em->flush();
@@ -161,7 +181,7 @@ class JobOrchestrationCommand extends Command
     protected function runJob(BaseJob $job)
     {
         $job
-            ->startedAt(new \DateTime())
+            ->setStartedAt(new \DateTime())
             ->setWorkerName(gethostname())
             ->setState(BaseJob::STATE_PENDING)
         ;
@@ -169,12 +189,12 @@ class JobOrchestrationCommand extends Command
         $dockerConfig = $this->docker->getJobConfig($job);
 
         $command = implode(' ', $dockerConfig['Cmd']);
-        $id = $this->docker->getClient()->runContainer(md5($command), $dockerConfig);
+        $id = $this->docker->getClient()->runContainer(md5($command . '-' . $job->getId()), $dockerConfig);
         if ($id === false) {
             throw new \Exception('could not run job.');
         }
 
-        $this->runningContainers[] = $this->docker->getClient()->inspectContainer($id);
+        $this->runningContainers[$id] = $id;
     }
 
     protected function retrieveRunnableJobs($limit)
@@ -184,6 +204,9 @@ class JobOrchestrationCommand extends Command
 
     protected function updateContainers()
     {
+        $this->runningContainers = [];
+        $this->stoppedContainers = [];
+
         $containers = $this->docker->getClient()->listContainers(DockerService::ORCHESTRATION_DOCKER_LABEL);
 
         foreach ($containers as $container) {
@@ -195,9 +218,9 @@ class JobOrchestrationCommand extends Command
 
             $containerId = $container['Id'];
             if ($state === 'running') {
-                $this->runningContainers[$containerId] = $container;
+                $this->runningContainers[$containerId] = $containerId;
             } else if ($state === 'exited') {
-                $this->stoppedContainers[$containerId] = $container;
+                $this->stoppedContainers[$containerId] = $containerId;
             }
 
             $this->updateCounters();

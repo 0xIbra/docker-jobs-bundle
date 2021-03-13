@@ -2,7 +2,7 @@
 
 namespace Polkovnik\DockerJobsBundle\Service;
 
-use Polkovnik\DockerClient;
+use Polkovnik\Component\DockerClient;
 use Polkovnik\DockerJobsBundle\Entity\BaseJob;
 use Polkovnik\DockerJobsBundle\Manager\JobManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,6 +16,9 @@ class DockerService
 
     /** @var string */
     private $dockerImage;
+
+    /** @var string */
+    private $dockerWorkingDir;
 
     /** @var JobManager */
     private $jobManager;
@@ -32,6 +35,7 @@ class DockerService
 
         $this->docker = new DockerClient($options);
         $this->dockerImage = $container->getParameter('docker_jobs.docker_image');
+        $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker_working_dir');
         $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
     }
 
@@ -53,7 +57,7 @@ class DockerService
 
     public function getJobConfig(BaseJob $job)
     {
-        $command = $this->jobManager->getCommand($job);
+        $command = $job->getCommand();
         $config = [
             'Image' => $this->dockerImage,
             'Cmd' => explode(' ', $command),
@@ -65,6 +69,9 @@ class DockerService
                 self::ORCHESTRATION_DOCKER_LABEL => self::ORCHESTRATION_DOCKER_LABEL,
                 'job_id' => (string) $job->getId(),
             ],
+            'WorkingDir' => $this->dockerWorkingDir
         ];
+
+        return $config;
     }
 }

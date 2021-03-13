@@ -138,6 +138,13 @@ class BaseJob
     protected $exitCode;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    protected $errorMessage;
+
+    /**
      * @var int
      *
      * @ORM\Column(type="integer", nullable=true)
@@ -322,7 +329,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setStartedAt(\DateTime $startedAt)
+    public function setStartedAt($startedAt)
     {
         $this->startedAt = $startedAt;
 
@@ -506,6 +513,25 @@ class BaseJob
     {
         $this->exitCode = $exitCode;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     *
+     * @return self
+     */
+    public function setErrorMessage(string $errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
         return $this;
     }
 
