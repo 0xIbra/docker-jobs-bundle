@@ -22,7 +22,7 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->scalarNode('docker_unix_socket_path')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('docker_base_uri')->defaultNull()->end()
-                ->scalarNode('docker_image')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('docker_image_id')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('docker_working_dir')->isRequired()->cannotBeEmpty()->end()
                 ->arrayNode('runtime')
                     ->addDefaultsIfNotSet()

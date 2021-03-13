@@ -36,6 +36,7 @@ class JobManager
         $job = new $this->class();
         $job
             ->setCommand($payload['command'])
+            ->setDockerImageId($payload['dockerImageId'])
         ;
 
         $this->em->persist($job);

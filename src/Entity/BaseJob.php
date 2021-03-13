@@ -158,6 +158,13 @@ class BaseJob
      */
     protected $maxRetries = 0;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $dockerImageId;
+
     public function __construct()
     {
         $this->args = [];
@@ -571,6 +578,26 @@ class BaseJob
     public function setMaxRetries(int $maxRetries)
     {
         $this->maxRetries = $maxRetries;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDockerImageId()
+    {
+        return $this->dockerImageId;
+    }
+
+    /**
+     * @param string $dockerImageId
+     *
+     * @return self
+     */
+    public function setDockerImageId($dockerImageId)
+    {
+        $this->dockerImageId = $dockerImageId;
 
         return $this;
     }

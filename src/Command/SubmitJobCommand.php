@@ -32,6 +32,7 @@ class SubmitJobCommand extends Command
             ->setDescription('Creates a new job and submits it to a queue for processing.')
             ->addOption('--command', null, InputOption::VALUE_REQUIRED, 'command to execute.')
             ->addOption('--queue', null, InputOption::VALUE_OPTIONAL, 'queue where to submit the job.', 'default')
+            ->addOption('--docker-image-id', null, InputOption::VALUE_OPTIONAL, 'ID of the docker image that must be used to execute the job.')
             ->addUsage('"run:my:command --arg1=yes"')
         ;
     }
@@ -45,10 +46,15 @@ class SubmitJobCommand extends Command
 
         $queue = $options['queue'];
         $command = $options['command'];
+        $dockerImageId = null;
+        if (!empty($options['docker-image-id'])) {
+            $dockerImageId = $options['docker-image-id'];
+        }
 
         $job = $this->jobManager->createJob([
             'queue' => $queue,
             'command' => $command,
+            'dockerImageId' => $dockerImageId,
         ]);
 
         $output->writeln('<info>Job successfully created.</info>');

@@ -134,6 +134,8 @@ class JobOrchestrationCommand extends Command
                 /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
 
+                if (!empty($container['State']['StartedAt']))
+
                 $state = BaseJob::STATE_FINISHED;
                 if ($container['State']['ExitCode'] !== 0) {
                     $state = BaseJob::STATE_FAILED;
@@ -152,7 +154,13 @@ class JobOrchestrationCommand extends Command
                 ;
 
                 $deletion = $this->docker->getClient()->deleteContainer($containerId);
-                usleep(500000);
+
+                $exitCode = $container['State']['ExitCode'];
+                if ($exitCode === 0) {
+                    $this->log('success', 'job finished with success', $job);
+                } else {
+                    $this->log('error', 'job exited with code: ' . $exitCode, $job);
+                }
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
@@ -163,7 +171,7 @@ class JobOrchestrationCommand extends Command
 
             $this->em->flush();
 
-            sleep(3);
+            sleep(1);
             gc_collect_cycles();
         }
     }
@@ -172,7 +180,7 @@ class JobOrchestrationCommand extends Command
     {
         $this->docker->getClient()->info();
 
-        $dockerImage = $this->container->getParameter('docker_jobs.docker_image');
+        $dockerImage = $this->container->getParameter('docker_jobs.docker_image_id');
         if (!$this->docker->imageExists($dockerImage)) {
             throw new DockerImageNotFoundException(sprintf('"%s" docker image does not exist.', $dockerImage));
         }
@@ -193,6 +201,8 @@ class JobOrchestrationCommand extends Command
         if ($id === false) {
             throw new \Exception('could not run job.');
         }
+
+        $this->log('info', 'new job starting.', $job);
 
         $this->runningContainers[$id] = $id;
     }
@@ -231,5 +241,24 @@ class JobOrchestrationCommand extends Command
     {
         $this->runningContainerCount = count($this->runningContainers);
         $this->stoppedContainerCount = count($this->stoppedContainers);
+    }
+
+    private function log($level, $text, BaseJob $job = null)
+    {
+        if ($job !== null) {
+            $text = sprintf('[%s][job #%s] %s', $level, $job->getId(), $text);
+        } else {
+            $text = sprintf('[%s] %s', $level, $text);
+        }
+
+        if ($level === 'info') {
+            $this->output->writeln($text);
+        } else if ($level === 'error') {
+            $this->output->writeln(sprintf('<error>%s</error>', $text));
+        } else if ($level === 'success') {
+            $this->output->writeln(sprintf('<info>%s</info>', $text));
+        } else if ($level === 'warning') {
+            $this->output->writeln(sprintf('<comment>%s</comment>', $text));
+        }
     }
 }

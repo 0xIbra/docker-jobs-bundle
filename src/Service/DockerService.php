@@ -41,7 +41,7 @@ class DockerService
             $this->docker = new DockerClient($options);
         }
 
-        $this->dockerImage = $container->getParameter('docker_jobs.docker_image');
+        $this->dockerImage = $container->getParameter('docker_jobs.docker_image_id');
         $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker_working_dir');
         $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
     }
@@ -64,9 +64,14 @@ class DockerService
 
     public function getJobConfig(BaseJob $job)
     {
+        $image = $this->dockerImage;
+        if (!empty($job->getDockerImageId())) {
+            $image = $job->getDockerImageId();
+        }
+
         $command = $job->getCommand();
         $config = [
-            'Image' => $this->dockerImage,
+            'Image' => $image,
             'Cmd' => explode(' ', $command),
             'HostConfig' => [
                 'LogConfig' => ['Type' => 'json-file'],

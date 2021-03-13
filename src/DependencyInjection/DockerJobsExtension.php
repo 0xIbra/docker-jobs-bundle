@@ -28,7 +28,7 @@ class DockerJobsExtension extends Extension
 
         $container->setParameter('docker_jobs.docker_unix_socket_path', $config['docker_unix_socket_path']);
         $container->setParameter('docker_jobs.docker_base_uri', $config['docker_base_uri']);
-        $container->setParameter('docker_jobs.docker_image', $config['docker_image']);
+        $container->setParameter('docker_jobs.docker_image_id', $config['docker_image_id']);
         $container->setParameter('docker_jobs.docker_working_dir', $config['docker_working_dir']);
         $container->setParameter('docker_jobs.class.job', $config['class']['job']);
         $container->setParameter('docker_jobs.runtime.concurrency_limit', $config['runtime']['concurrency_limit']);
