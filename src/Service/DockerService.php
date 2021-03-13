@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class DockerService
 {
     const ORCHESTRATION_DOCKER_LABEL = 'polkovnik_docker_jobs';
+    const DOCKER_JOB_IDENTIFYING_ENV = 'IS_DOCKER_JOB';
 
     /** @var DockerClient */
     private $docker;
@@ -33,7 +34,13 @@ class DockerService
             $options['docker_base_uri'] = $dockerBaseUri;
         }
 
-        $this->docker = new DockerClient($options);
+        $isJob = getenv(self::DOCKER_JOB_IDENTIFYING_ENV);
+        if (!empty($isJob)) {
+            $this->docker = null;
+        } else {
+            $this->docker = new DockerClient($options);
+        }
+
         $this->dockerImage = $container->getParameter('docker_jobs.docker_image');
         $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker_working_dir');
         $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
@@ -69,7 +76,8 @@ class DockerService
                 self::ORCHESTRATION_DOCKER_LABEL => self::ORCHESTRATION_DOCKER_LABEL,
                 'job_id' => (string) $job->getId(),
             ],
-            'WorkingDir' => $this->dockerWorkingDir
+            'WorkingDir' => $this->dockerWorkingDir,
+            'Env' => [sprintf('%s=true', self::DOCKER_JOB_IDENTIFYING_ENV)]
         ];
 
         return $config;
