@@ -1,0 +1,58 @@
+{% trans_default_domain 'DockerJobsBundle' %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Dashboard | Docker jobs{% endblock %}</title>
+
+        {% block metas %}
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <meta name="robots" content="noindex, nofollow">
+        {% endblock %}
+
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+            <link rel="stylesheet" href="{{ asset('bundles/dockerjobs/css/fontawesome-free/css/all.min.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/dockerjobs/css/sb-admin-2.css') }}">
+            <link rel="stylesheet" href="{{ asset('bundles/dockerjobs/css/main.css') }}">
+        {% endblock %}
+    </head>
+    <body id="page-top">
+
+        {% block contentWrapper %}
+            <div id="wrapper">
+                {% block sidebar %}
+                    {% include '@DockerJobs/includes/sidebar.html.twig' %}
+                {% endblock %}
+
+                <div id="content-wrapper" class="d-flex flex-column">
+                    <div id="content">
+                        {% block topNavbar %}
+                            {% include '@DockerJobs/includes/top-navbar.html.twig' %}
+                        {% endblock %}
+
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block modalBlock %}{% endblock %}
+
+        {% block scrollToTop %}
+            <a class="scroll-to-top rounded" href="#page-top">
+                <i class="fas fa-angle-up"></i>
+            </a>
+        {% endblock %}
+
+        {% block javascripts %}
+            <script src="{{ asset('bundles/dockerjobs/js/jquery.min.js') }}"></script>
+            <script src="{{ asset('bundles/dockerjobs/js/bootstrap.bundle.min.js') }}"></script>
+            <script src="{{ asset('bundles/dockerjobs/js/jquery.easing.min.js') }}"></script>
+            <script src="{{ asset('bundles/dockerjobs/js/sb-admin-2.min.js') }}"></script>
+            <script src="{{ asset('bundles/dockerjobs/js/Chart.min.js') }}"></script>
+            <script src="{{ asset('bundles/dockerjobs/js/main.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

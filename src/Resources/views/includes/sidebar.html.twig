@@ -1,0 +1,82 @@
+{% trans_default_domain 'DockerJobsBundle' %}
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ path('polkovnik.docker_jobs.index') }}">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="sidebar-brand-text mx-2" style="font-size: 14px">Docker jobs</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item {% if app.request.get('_route') == 'polkovnik.docker_jobs.index' %}active{% endif %}">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.index') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>{{ 'polkovnik.docker_jobs.sidebar.dashboard' | trans }}</span></a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        {{ 'polkovnik.docker_jobs.jobs' | trans }}
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'new', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="fas fa-fw fa-clock"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.new' | trans }}</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'pending', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="fas fa-fw fa-hourglass-start text-warning"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'running', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="fas fa-fw fa-cogs text-primary"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.running' | trans }}</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'finished', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="fas fa-fw fa-check-circle text-success"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'failed', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="fas fa-fw fa-exclamation-triangle text-danger"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</span></a>
+    </li>
+
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+    <!-- Sidebar Message -->
+    <div class="sidebar-card d-none d-lg-flex">
+        <img class="sidebar-card-illustration mb-2" src="{{ asset('bundles/dockerjobs/img/undraw_rocket.svg') }}" alt="">
+        <p class="text-center mb-2">Do you like this bundle ? <br> Consider leaving a star on <b>GitHub</b></p>
+        <a class="btn btn-success btn-sm" href="https://github.com/ibragim64/docker-jobs-bundle">Leave a star</a>
+    </div>
+
+</ul>

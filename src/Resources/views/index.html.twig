@@ -1,0 +1,491 @@
+{% extends '@DockerJobs/layout.html.twig' %}
+{% trans_default_domain 'DockerJobsBundle' %}
+
+{% block content %}
+    <div class="container-fluid mt-4">
+
+        <!-- Page Heading -->
+        <div class="d-sm-flex align-items-center justify-content-between mb-4" style="justify-content: right">
+            <div>
+                <h1 class="h3 mb-0 text-gray-800">{{ 'polkovnik.docker_jobs.sidebar.dashboard' | trans }}</h1>
+            </div>
+
+            <div>
+                <div class="d-none d-sm-inline-block mr-1">
+                    <select class="form-control" id="queueSelector">
+                        <option value="all">{{ 'polkovnik.docker_jobs.queue.all' | trans }}</option>
+                        {% for queue in queues %}
+                            <option value="{{ queue }}" {% if selectedQueue == queue %}selected{% endif %}>{{ queue | trans | capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-none d-sm-inline-block mr-1">
+                    <select class="form-control" id="periodSelector">
+                        {% for period, name in periods %}
+                            <option value="{{ period }}" {% if period == selectedPeriod %}selected{% endif %}>{{ name | trans }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-none d-sm-inline-block">
+                    <button id="filter-apply" class="filter-apply-btn btn btn-secondary disabled"><i class="fas fa-filter"></i></button>
+                </div>
+            </div>
+
+{#            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
+{#                        class="fas fa-download fa-sm text-white-50"></i>{{ 'polkovnik.docker_jobs.generate_report' | trans }}</a>#}
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    {{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.pending }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    {{ 'polkovnik.docker_jobs.jobs.running' | trans }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.running }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <!--                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>-->
+                                <i class="fas fa-cogs fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    {{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.finished }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="far fa-check-circle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Requests Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    {{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.failed }}</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Content Row -->
+
+        <div class="row">
+
+            <!-- Area Chart -->
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.jobs.per_period' | trans }}</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="myAreaChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pie Chart -->
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div
+                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Jobs par statut</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                 aria-labelledby="dropdownMenuLink">
+                                <div class="dropdown-header">Dropdown Header:</div>
+                                <a class="dropdown-item" href="#">Action</a>
+                                <a class="dropdown-item" href="#">Another action</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#">Something else here</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="myPieChart"></canvas>
+                        </div>
+                        <div class="mt-4 text-center small">
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-warning"></i> {{ 'polkovnik.docker_jobs.state.pending' | trans }}
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-primary"></i> {{ 'polkovnik.docker_jobs.state.running' | trans }}
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-success"></i> {{ 'polkovnik.docker_jobs.state.finished' | trans }}
+                            </span>
+                            <span class="mr-2">
+                                <i class="fas fa-circle text-danger"></i> {{ 'polkovnik.docker_jobs.state.failed' | trans }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+
+            <!-- Content Column -->
+            <div class="col-lg-6 mb-4">
+
+                <!-- Jobs Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.jobs.latest_running' | trans }}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if latestJobs.running is not empty %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="latestRunningJobs" width="100%" cellspacing="0" style="font-size: 13px !important;">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Commande</th>
+                                        <th>Début</th>
+                                        <th>Worker</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for job in latestJobs.running %}
+                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}" onclick="clickHandler(this)">
+                                            <td><strong>{{ job.id }}</strong></td>
+                                            <td>{{ job.command }}</td>
+                                            <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
+                                            <td>{{ job.workerName }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Column -->
+            <div class="col-lg-6 mb-4">
+
+                <!-- Jobs Example -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-success">{{ 'polkovnik.docker_jobs.jobs.latest_finished' | trans }}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if latestJobs.finished is not empty %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="latestFinishedJobs" width="100%" cellspacing="0" style="font-size: 13px !important;">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Commande</th>
+                                        <th>Début</th>
+                                        <th>Durée</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for job in latestJobs.finished %}
+                                        <tr onclick="clickHandler(this)" class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}">
+                                            <td><strong>{{ job.id }}</strong></td>
+                                            <td>{{ job.command }}</td>
+                                            <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
+                                            <td>{{ job.runtime }} {% if job.runtime > 0 %}secondes{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 mb-4">
+
+                <!-- Jobs Example -->
+                <div class="card shadow mb-4 ml-0 mr-0">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-danger">{{ 'polkovnik.docker_jobs.jobs.latest_failed' | trans }}</h6>
+                    </div>
+                    <div class="card-body">
+                        {% if latestJobs.failed is not empty %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable2" width="100%" cellspacing="0" style="font-size: 13px !important;">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Commande</th>
+                                        <th>Début</th>
+                                        <th>Erreur</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for job in latestJobs.failed %}
+                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}" onclick="clickHandler(this)">
+                                            <td><strong>{{ job.id }}</strong></td>
+                                            <td>{{ job.command }}</td>
+                                            <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
+                                            <td class="text-danger">{{ job.errorMessage }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+
+        $(document).ready(() => {
+
+            // Set new default font family and font color to mimic Bootstrap's default styling
+            Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+            Chart.defaults.global.defaultFontColor = '#858796';
+
+            function number_format(number, decimals, dec_point, thousands_sep) {
+                // *     example: number_format(1234.56, 2, ',', ' ');
+                // *     return: '1 234,56'
+                number = (number + '').replace(',', '').replace(' ', '');
+                var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + Math.round(n * k) / k;
+                    };
+                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+                s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+                if (s[0].length > 3) {
+                    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+                }
+                if ((s[1] || '').length < prec) {
+                    s[1] = s[1] || '';
+                    s[1] += new Array(prec - s[1].length + 1).join('0');
+                }
+                return s.join(dec);
+            }
+
+            // Area Chart Example
+            var ctx = document.getElementById("myAreaChart");
+            var myLineChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {{ statistics.period.labels | json_encode | raw }},
+                    datasets: [{
+                        label: "{{ 'polkovnik.docker_jobs.jobs' | trans }}",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHoverRadius: 3,
+                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: {{ statistics.period.values | json_encode | raw }},
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            left: 10,
+                            right: 25,
+                            top: 25,
+                            bottom: 0
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: {
+                                unit: 'date'
+                            },
+                            gridLines: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 7
+                            }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                // Include a dollar sign in the ticks
+                                callback: function(value, index, values) {
+                                    return '' + number_format(value);
+                                }
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }],
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(tooltipItem, chart) {
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return datasetLabel + ': ' + number_format(tooltipItem.yLabel);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Pie Chart Example
+            var ctx = document.getElementById("myPieChart");
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ["En attente", "En cours", "Finis", "En échec"],
+                    datasets: [{
+                        data: {{ statistics.countArray | json_encode | raw }},
+                        backgroundColor: ['#f6c23e', '#4e73df', '#1cc88a', '#ff2645'],
+                        hoverBackgroundColor: ['#d9ab38', '#2e59d9', '#17a673', '#d01a34'],
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: {
+                        display: false
+                    },
+                    cutoutPercentage: 80,
+                },
+            });
+
+            $('#periodSelector').on('change', () => {
+                let btn = $('#filter-apply');
+
+                btn.removeClass('disabled');
+                btn.removeClass('btn-secondary');
+                btn.addClass('btn-primary')
+            });
+
+            $('#queueSelector').on('change', () => {
+                let btn = $('#filter-apply');
+
+                btn.removeClass('disabled');
+                btn.removeClass('btn-secondary');
+                btn.addClass('btn-primary')
+            });
+
+            $('#filter-apply').on('click', () => {
+                let btn = $('#filter-apply');
+
+                btn.removeClass('btn-primary');
+                btn.addClass('btn-secondary');
+                btn.addClass('disabled');
+
+                let period = $('#periodSelector').val();
+                let queue = $('#queueSelector').val();
+
+                window.location = `?period=${period}&queue=${queue}`;
+            })
+        })
+
+    </script>
+{% endblock %}

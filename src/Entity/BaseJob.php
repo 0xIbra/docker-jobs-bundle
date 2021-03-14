@@ -61,6 +61,13 @@ class BaseJob
     protected $command;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    protected $checked;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime")
@@ -87,6 +94,13 @@ class BaseJob
      * @ORM\Column(type="datetime", nullable=true)
      */
     protected $executingAfter;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    protected $stoppedAt;
 
     /**
      * @var string
@@ -167,7 +181,7 @@ class BaseJob
 
     public function __construct()
     {
-        $this->args = [];
+        $this->checked = false;
         $this->createdAt = new \DateTime();
     }
 
@@ -304,6 +318,26 @@ class BaseJob
     }
 
     /**
+     * @return bool
+     */
+    public function isChecked()
+    {
+        return $this->checked;
+    }
+
+    /**
+     * @param bool $checked
+     *
+     * @return self
+     */
+    public function setChecked($checked)
+    {
+        $this->checked = $checked;
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -376,9 +410,29 @@ class BaseJob
      *
      * @return self
      */
-    public function setExecutingAfter(\DateTime $executingAfter)
+    public function setExecutingAfter($executingAfter)
     {
         $this->executingAfter = $executingAfter;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStoppedAt()
+    {
+        return $this->stoppedAt;
+    }
+
+    /**
+     * @param \DateTime $stoppedAt
+     *
+     * @return self
+     */
+    public function setStoppedAt($stoppedAt)
+    {
+        $this->stoppedAt = $stoppedAt;
 
         return $this;
     }

@@ -34,7 +34,7 @@ class DockerJobsExtension extends Extension
         $container->setParameter('docker_jobs.runtime.concurrency_limit', $config['runtime']['concurrency_limit']);
 
         $this->addAnnotatedClassesToCompile([
-            '**Polkovnik\\DockerJobsBundle\\Controller\\'
+            'Polkovnik\\DockerJobsBundle\\Controller\\MonitoringController'
         ]);
     }
 }

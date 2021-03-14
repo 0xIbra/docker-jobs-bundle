@@ -1,0 +1,252 @@
+{% extends '@DockerJobs/layout.html.twig' %}
+{% trans_default_domain 'DockerJobsBundle' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        #filter-fields div input {
+            font-size: 12px !important;
+        }
+
+        #filter-fields div input::placeholder {
+            font-size: 12px !important;
+        }
+
+        #filter-fields div select {
+            font-size: 12px !important;
+        }
+
+        @media screen and (max-width: 780px) {
+            .flex-direction-column {
+                flex-direction: column;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% set selectedId = selectedValues['id'] %}
+    {% set selectedCommand = selectedValues['command'] %}
+    {% set selectedState = selectedValues['state'] %}
+    {% set selectedQueue = selectedValues['queue'] %}
+    {% set selectedPeriod = selectedValues['period'] %}
+
+    <div class="container-fluid mt-3">
+
+        <div class="d-sm-flex align-items-center justify-content-between flex-direction-column mb-4">
+            <div class="">
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">{{ 'polkovnik.docker_jobs.jobs' | trans }}</h1>
+            </div>
+
+            <div id="filter-fields" class="d-none d-lg-block">
+                <div class="d-none d-lg-inline-block d-md-inline-block mr-1">
+                    <input type="text" class="form-control" id="idFilter" placeholder="{{ 'polkovnik.docker_jobs.fields.job_id.label' | trans }}" value="{{ selectedId | default }}" style="max-width: 70px;">
+                </div>
+
+                <div class="d-none d-sm-none d-lg-inline-block d-md-inline-block mr-1">
+                    <input type="text" class="form-control" id="commandFilter" placeholder="{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}" value="{{ selectedCommand | default }}" style="max-width: 200px;">
+                </div>
+
+                <div class="d-none d-sm-block d-md-inline-block d-lg-inline-block mr-1">
+                    <select class="form-control" id="stateSelector">
+                        <option value="all">{{ 'polkovnik.docker_jobs.state' | trans }}</option>
+                        {% for state in states %}
+                            <option value="{{ state }}" {% if selectedState == state %}selected{% endif %}>{{ ('polkovnik.docker_jobs.state.'~ state) | trans }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-none d-sm-inline-block mr-1">
+                    <select class="form-control" id="queueSelector">
+                        <option value="all">{{ 'polkovnik.docker_jobs.queue.all' | trans }}</option>
+                        {% for queue in queues %}
+                            <option value="{{ queue }}" {% if selectedQueue == queue %}selected{% endif %}>{{ queue | trans | capitalize }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-none d-sm-inline-block mr-1">
+                    <select class="form-control" id="periodSelector">
+                        {% for period, name in periods %}
+                            <option value="{{ period }}" {% if period == selectedPeriod %}selected{% endif %}>{{ name | trans }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-none d-sm-inline-block">
+                    <button id="filter-apply" class="filter-apply-btn btn btn-secondary disabled"><i class="fas fa-filter"></i></button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">{{ pagination.total }} {{ 'polkovnik.docker_jobs.jobs_found' | trans }}</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>{{ 'polkovnik.docker_jobs.fields.job_id.label' | trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.createdAt.label'| trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.startedAt.label'| trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.runtime.label'| trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.stoppedAt.label'| trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.fields.state.label'| trans }}</th>
+                            <th>{{ 'polkovnik.docker_jobs.actions.label'| trans }}</th>
+                        </tr>
+                        </thead>
+{#                        <tfoot>#}
+{#                        <tr>#}
+{#                            <th>Name</th>#}
+{#                            <th>Position</th>#}
+{#                            <th>Office</th>#}
+{#                            <th>Age</th>#}
+{#                            <th>Start date</th>#}
+{#                            <th>Salary</th>#}
+{#                        </tr>#}
+{#                        </tfoot>#}
+                        <tbody>
+                            {% for job in pagination.jobs %}
+                                <tr class="clickable">
+                                    <td><strong>{{ job.id }}</strong></td>
+                                    <td>{{ job.command }}</td>
+                                    <td>{{ job.createdAt | date('H:i:s d/m/y') }}</td>
+                                    <td>{{ job.startedAt | date('H:i:s d/m/y') }}</td>
+                                    <td>{{ job.runtime }}</td>
+                                    <td></td>
+                                    {% set statusContainerId = 'jobs-status-' ~ loop.index %}
+                                    <td id="{{ statusContainerId }}">
+                                        <span class="status-badge {{ job.state }}">
+                                            {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
+                                            {{ key | trans }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if job.state == 'new' or job.state == 'pending' %}
+                                            <button class="btn btn-danger modernize" onclick="cancelJob(this, '{{ statusContainerId | raw }}', '{{ job.id | raw }}')">
+                                                {{ 'polkovnik.docker_jobs.actions.cancel.label' | trans }}
+                                            </button>
+                                        {% endif %}
+                                        <button class="btn btn-primary modernize">
+                                            {{ 'polkovnik.docker_jobs.actions.show.label' | trans }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-sm-12 col-md-5">
+                        <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">
+                            {% set from = pagination.from %}
+                            {% set to = pagination.to %}
+                            {% set total = pagination.total %}
+
+                            {{ 'polkovnik.docker_jobs.pagination.statistics_text' | trans({ '%from%': from, '%to%': to, '%total%': total }) }}
+                        </div>
+                    </div>
+
+                    {% if pagination.totalPages > 1 %}
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate" style="display: flex; justify-content: right;">
+                                <ul class="pagination">
+                                    <li class="paginate_button page-item previous {% if pagination.currentPage == 1 %}disabled{% endif %}" id="dataTable_previous">
+                                        {% set previousPage = pagination.currentPage - 1 %}
+                                        {% if previousPage <= 0 %}
+                                            {% set previousPages = 1 %}
+                                        {% endif %}
+                                        {% set selectedPageValues = selectedValues | merge({ page: previousPage }) %}
+                                        <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'polkovnik.docker_jobs.pagination.previous.label' | trans }}</a>
+                                    </li>
+                                    {% for i in range(1, pagination.totalPages) %}
+                                        <li class="paginate_button page-item {% if i == pagination.currentPage %}active{% endif %}">
+                                            {% set selectedPageValues = selectedValues | merge({ page: i }) %}
+                                            <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ i }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    <li class="paginate_button page-item next {% if pagination.currentPage == pagination.totalPages %}disabled{% endif %}" id="dataTable_next">
+                                        {% set nextPage = pagination.currentPage + 1 %}
+                                        {% if nextPage > pagination.totalPages %}
+                                            {% set nextPage = pagination.totalPages %}
+                                        {% endif %}
+                                        {% set selectedPageValues = selectedValues | merge({ page: nextPage }) %}
+                                        <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'polkovnik.docker_jobs.pagination.next.label' | trans }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(document).ready(() => {
+
+            $('#idFilter, #commandFilter').on('keyup', () => {
+                let btn = $('#filter-apply');
+
+                btn.removeClass('disabled');
+                btn.removeClass('btn-secondary');
+                btn.addClass('btn-primary');
+            });
+
+            $('#stateSelector, #queueSelector, #periodSelector').on('change', () => {
+                let btn = $('#filter-apply');
+
+                btn.removeClass('disabled');
+                btn.removeClass('btn-secondary');
+                btn.addClass('btn-primary');
+            });
+
+            $('#filter-apply').on('click', () => {
+                let id = $('#idFilter').val();
+                let command = $('#commandFilter').val();
+                let state = $('#stateSelector').val();
+                let queue = $('#queueSelector').val();
+                let period = $('#periodSelector').val();
+
+                let applyBtn = $('#filter-apply');
+                applyBtn.add('disabled');
+
+                window.location = '?filters=' + JSON.stringify({ id, command, state, queue, period });
+            });
+        });
+
+        function cancelJob(element, statusContainerId, id) {
+            $.ajax({
+                method: 'DELETE',
+                url: "{{ path('polkovnik.docker_jobs.jobs.cancel', {id: 1}) }}".replace('1', id),
+                success: (result) => {
+                    if (result.status === 200) {
+                        $(element).remove();
+
+                        let statusContainer = $('#' + statusContainerId + ' > span');
+                        statusContainer.removeAttr('class');
+
+                        statusContainer.addClass('status-badge')
+                        statusContainer.addClass('canceled')
+                        statusContainer.text('{{ 'polkovnik.docker_jobs.state.canceled' | trans }}');
+                    }
+                },
+                error: (e) => {
+                    console.log('[error] ', e);
+                }
+            })
+        }
+    </script>
+{% endblock %}
