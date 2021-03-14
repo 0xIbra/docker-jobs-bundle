@@ -1,0 +1,58 @@
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover td {
+    background-color: rgba(0,0,0,0.05) !important;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.clickable:hover td {
+    background-color: rgba(0,0,0,0.05) !important;
+}
+
+button.btn.modernize {
+    padding: 5px 10px !important;
+    font-size: 13px !important;
+}
+
+td span.status-badge {
+    padding: 3px 7px;
+    font-size: 14px;
+    border-radius: 3px;
+    max-height: 27px;
+    font-weight: bold;
+}
+
+td span.status-badge.new {
+    color: #eee !important;
+    background-color: #6c757d !important;
+}
+
+td span.status-badge.pending {
+    color: #eee !important;
+    background-color: #6c757d !important;
+}
+
+td span.status-badge.canceled {
+    color: #eee !important;
+    background-color: #f0ad4e !important;
+}
+
+td span.status-badge.running {
+    color: #eee !important;
+    background-color: #0275d8 !important;
+}
+
+td span.status-badge.finished {
+    color: #eee !important;
+    background-color: #5cb85c !important;
+}
+
+td span.status-badge.failed {
+    color: #eee !important;
+    background-color: #d9534f !important;
+}

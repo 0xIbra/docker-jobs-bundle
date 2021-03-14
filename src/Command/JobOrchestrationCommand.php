@@ -114,6 +114,9 @@ class JobOrchestrationCommand extends Command
                 $container = $this->docker->getClient()->inspectContainer($containerId);
                 $jobId = (int) $container['Config']['Labels']['job_id'];
 
+                file_put_contents('container.json', json_encode($container));
+                exit;
+
                 /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
 
