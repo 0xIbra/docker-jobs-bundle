@@ -1,5 +1,11 @@
 {% trans_default_domain 'DockerJobsBundle' %}
 
+{% set selectedState = null %}
+{% set filtersString = app.request.get('filters') %}
+{% if filtersString is not empty %}
+    {% set selectedState = get_state_from_filters(filtersString) %}
+{% endif %}
+
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
@@ -20,6 +26,13 @@
             <span>{{ 'polkovnik.docker_jobs.sidebar.dashboard' | trans }}</span></a>
     </li>
 
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item {% if app.request.get('_route') == 'polkovnik.docker_jobs.jobs.submit' %}active{% endif %}">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.submit') }}">
+            <i class="fas fa-fw fa-plus-circle"></i>
+            <span>{{ 'polkovnik.docker_jobs.sidebar.submit_job' | trans }}</span></a>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 
@@ -29,40 +42,59 @@
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    <li class="nav-item  {% if app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState is null %}active{% endif %}">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}">
+            <i class="fas fa-fw fa-stream"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.all' | trans }}</span></a>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'new' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
         <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'new', period: 'currentMonth' } | json_encode | raw }) }}">
             <i class="fas fa-fw fa-clock"></i>
             <span>{{ 'polkovnik.docker_jobs.jobs.new' | trans }}</span></a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'pending' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
         <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'pending', period: 'currentMonth' } | json_encode | raw }) }}">
             <i class="fas fa-fw fa-hourglass-start text-warning"></i>
             <span>{{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</span></a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'running' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
         <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'running', period: 'currentMonth' } | json_encode | raw }) }}">
             <i class="fas fa-fw fa-cogs text-primary"></i>
             <span>{{ 'polkovnik.docker_jobs.jobs.running' | trans }}</span></a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'finished' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
         <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'finished', period: 'currentMonth' } | json_encode | raw }) }}">
             <i class="fas fa-fw fa-check-circle text-success"></i>
             <span>{{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</span></a>
     </li>
 
     <!-- Nav Item - Pages Collapse Menu -->
-    <li class="nav-item">
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'failed' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
         <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'failed', period: 'currentMonth' } | json_encode | raw }) }}">
             <i class="fas fa-fw fa-exclamation-triangle text-danger"></i>
             <span>{{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</span></a>
     </li>
 
+    <!-- Nav Item - Pages Collapse Menu -->
+    {% set activeCond = app.request.get('_route') == 'polkovnik.docker_jobs.jobs.explorer' and selectedState == 'stopped' %}
+    <li class="nav-item {% if activeCond %}active{% endif %}">
+        <a class="nav-link" href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: { state: 'stopped', period: 'currentMonth' } | json_encode | raw }) }}">
+            <i class="far fa-fw fa-stop-circle text-danger"></i>
+            <span>{{ 'polkovnik.docker_jobs.jobs.stopped' | trans }}</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
@@ -75,8 +107,11 @@
     <!-- Sidebar Message -->
     <div class="sidebar-card d-none d-lg-flex">
         <img class="sidebar-card-illustration mb-2" src="{{ asset('bundles/dockerjobs/img/undraw_rocket.svg') }}" alt="">
-        <p class="text-center mb-2">Do you like this bundle ? <br> Consider leaving a star on <b>GitHub</b></p>
-        <a class="btn btn-success btn-sm" href="https://github.com/ibragim64/docker-jobs-bundle">Leave a star</a>
+        <p class="text-center mb-2">
+            {{ 'polkovnik.docker_jobs.ads.do_you_like' | trans }} <br> {{ 'polkovnik.docker_jobs.ads.consider_star' | trans }}
+            <a href="https://github.com/ibragim64/docker-jobs-bundle" target="_blank"><b>GitHub</b></a>
+        </p>
+        <a class="btn btn-success btn-sm" href="https://github.com/ibragim64/docker-jobs-bundle" target="_blank">{{ 'polkovnik.docker_jobs.ads.leave_star' | trans }}</a>
     </div>
 
 </ul>

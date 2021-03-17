@@ -41,73 +41,85 @@
             <!-- Pending Requests Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    {{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.pending }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    {% set filters = { state: 'pending', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
+                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                        {{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.pending }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <!-- Pending Requests Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    {{ 'polkovnik.docker_jobs.jobs.running' | trans }}</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.running }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <!--                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>-->
-                                <i class="fas fa-cogs fa-2x text-gray-300"></i>
+                    {% set filters = { state: 'running', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
+                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        {{ 'polkovnik.docker_jobs.jobs.running' | trans }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.running }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <!--                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>-->
+                                    <i class="fas fa-cogs fa-2x text-gray-300"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <!-- Pending Requests Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    {{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.finished }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="far fa-check-circle fa-2x text-gray-300"></i>
+                    {% set filters = { state: 'finished', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
+                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        {{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.finished }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="far fa-check-circle fa-2x text-gray-300"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
             <!-- Pending Requests Card Example -->
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    {{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.failed }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    {% set filters = { state: 'failed', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
+                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                        {{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.failed }}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
 
@@ -205,7 +217,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.running %}
-                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}" onclick="clickHandler(this)">
+                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
@@ -242,7 +254,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.finished %}
-                                        <tr onclick="clickHandler(this)" class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}">
+                                        <tr onclick="clickHandler(this)" class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
@@ -278,7 +290,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.failed %}
-                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.explorer') }}" onclick="clickHandler(this)">
+                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>

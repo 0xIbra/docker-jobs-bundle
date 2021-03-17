@@ -6,15 +6,15 @@
 
     <style>
         #filter-fields div input {
-            font-size: 12px !important;
+            font-size: 16px !important;
         }
 
         #filter-fields div input::placeholder {
-            font-size: 12px !important;
+            font-size: 16px !important;
         }
 
         #filter-fields div select {
-            font-size: 12px !important;
+            font-size: 14px !important;
         }
 
         @media screen and (max-width: 780px) {
@@ -99,41 +99,63 @@
                             <th>{{ 'polkovnik.docker_jobs.actions.label'| trans }}</th>
                         </tr>
                         </thead>
-{#                        <tfoot>#}
-{#                        <tr>#}
-{#                            <th>Name</th>#}
-{#                            <th>Position</th>#}
-{#                            <th>Office</th>#}
-{#                            <th>Age</th>#}
-{#                            <th>Start date</th>#}
-{#                            <th>Salary</th>#}
-{#                        </tr>#}
-{#                        </tfoot>#}
                         <tbody>
                             {% for job in pagination.jobs %}
                                 <tr class="clickable">
-                                    <td><strong>{{ job.id }}</strong></td>
-                                    <td>{{ job.command }}</td>
-                                    <td>{{ job.createdAt | date('H:i:s d/m/y') }}</td>
-                                    <td>{{ job.startedAt | date('H:i:s d/m/y') }}</td>
-                                    <td>{{ job.runtime }}</td>
-                                    <td></td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}"><strong>{{ job.id }}</strong></td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.command }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.createdAt | date('H:i:s d/m/y') }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.startedAt | date('H:i:s d/m/y') }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ get_job_runtime(job) }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.stoppedAt | date('H:i:s d/m/y') }}</td>
                                     {% set statusContainerId = 'jobs-status-' ~ loop.index %}
-                                    <td id="{{ statusContainerId }}">
-                                        <span class="status-badge {{ job.state }}">
-                                            {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
-                                            {{ key | trans }}
-                                        </span>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" id="{{ statusContainerId }}">
+                                        {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
+                                        {% if job.state == 'new' %}
+                                            <div class="key-value text-secondary">
+                                                <i class="fas fa-clock"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'pending' %}
+                                            <div class="key-value text-warning">
+                                                <i class="fas fa-hourglass-start"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'running' %}
+                                            <div class="key-value text-primary">
+                                                <i class="fas fa-circle-notch spinner"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'finished' %}
+                                            <div class="key-value text-success">
+                                                <i class="far fa-check-circle"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'canceled' %}
+                                            <div class="key-value text-warning modernize">
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'failed' %}
+                                            <div class="key-value text-danger">
+                                                <i class="far fa-times-circle"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% elseif job.state == 'stopped' %}
+                                            <div class="key-value text-danger">
+                                                <i class="far fa-stop-circle"></i>
+                                                {{ key | trans }}
+                                            </div>
+                                        {% endif %}
                                     </td>
                                     <td>
                                         {% if job.state == 'new' or job.state == 'pending' %}
-                                            <button class="btn btn-danger modernize" onclick="cancelJob(this, '{{ statusContainerId | raw }}', '{{ job.id | raw }}')">
+                                            <button class="cancel-btn btn btn-danger modernize" onclick="cancelJob(this, '{{ statusContainerId | raw }}', '{{ job.id | raw }}')">
                                                 {{ 'polkovnik.docker_jobs.actions.cancel.label' | trans }}
                                             </button>
                                         {% endif %}
-                                        <button class="btn btn-primary modernize">
+                                        <a href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" class="btn btn-primary modernize">
                                             {{ 'polkovnik.docker_jobs.actions.show.label' | trans }}
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -227,6 +249,10 @@
             });
         });
 
+        $('.cancel-btn').on('click', (e) => {
+            e.preventDefault();
+        });
+
         function cancelJob(element, statusContainerId, id) {
             $.ajax({
                 method: 'DELETE',
@@ -235,16 +261,26 @@
                     if (result.status === 200) {
                         $(element).remove();
 
-                        let statusContainer = $('#' + statusContainerId + ' > span');
-                        statusContainer.removeAttr('class');
+                        let statusContainer = $('#' + statusContainerId + '');
+                        // statusContainer.removeAttr('class');
 
-                        statusContainer.addClass('status-badge')
-                        statusContainer.addClass('canceled')
-                        statusContainer.text('{{ 'polkovnik.docker_jobs.state.canceled' | trans }}');
+                        {#statusContainer.addClass('status-badge')#}
+                        {#statusContainer.addClass('canceled')#}
+                        {#statusContainer.text('{{ 'polkovnik.docker_jobs.state.canceled' | trans }}');#}
+
+                        {% set key = 'polkovnik.docker_jobs.state.canceled' %}
+                        let html = `<div class="key-value text-warning modernize">
+                                        {{ key | trans }}
+                                    </div>`;
+
+                        statusContainer.html(html);
+                        console.log(result)
                     }
                 },
                 error: (e) => {
-                    console.log('[error] ', e);
+                    e
+                    .then(res => console.log('[error]', res))
+                    // console.log('[error] ', e);
                 }
             })
         }

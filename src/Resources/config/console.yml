@@ -1,0 +1,23 @@
+services:
+  polkovnik.docker_jobs.command.job_orchestration:
+    class: Polkovnik\DockerJobsBundle\Command\JobOrchestrationCommand
+    arguments:
+      - '@service_container'
+      - '@polkovnik.docker_jobs.service.docker'
+    tags:
+      - { name: console.command }
+
+  polkovnik.docker_jobs.command.submit_job:
+    class: Polkovnik\DockerJobsBundle\Command\SubmitJobCommand
+    arguments:
+      - '@service_container'
+    tags:
+      - { name: console.command }
+
+  polkovnik.docker_jobs.command.stop_job:
+    class: Polkovnik\DockerJobsBundle\Command\StopJobCommand
+    arguments:
+      - '@service_container'
+      - '@polkovnik.docker_jobs.service.docker'
+    tags:
+      - { name: console.command }

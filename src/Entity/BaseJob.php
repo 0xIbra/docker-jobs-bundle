@@ -15,6 +15,7 @@ class BaseJob
     const STATE_RUNNING = 'running';
     const STATE_FINISHED = 'finished';
     const STATE_FAILED = 'failed';
+    const STATE_STOPPED = 'stopped';
 
     /**
      * @var int
@@ -131,18 +132,25 @@ class BaseJob
     protected $runtime;
 
     /**
-     * @var int
+     * @var float
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
-    protected $memoryUsage;
+    protected $cpuUsage;
 
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="float", nullable=true)
      */
-    protected $memoryUsageReal;
+    protected $memoryUsage;
+
+    /**
+     * @var array
+     *
+     * @ORM\Column(type="array", nullable=true)
+     */
+    protected $environmentVariables;
 
     /**
      * @var int
@@ -179,6 +187,13 @@ class BaseJob
      */
     protected $dockerImageId;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $dockerContainerId;
+
     public function __construct()
     {
         $this->checked = false;
@@ -194,6 +209,7 @@ class BaseJob
             self::STATE_RUNNING,
             self::STATE_FINISHED,
             self::STATE_FAILED,
+            self::STATE_STOPPED,
         ];
     }
 
@@ -203,18 +219,6 @@ class BaseJob
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return self
-     */
-    public function setId(int $id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -230,7 +234,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setState(string $state)
+    public function setState($state)
     {
         $this->state = $state;
 
@@ -250,7 +254,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setQueue(string $queue)
+    public function setQueue($queue)
     {
         $this->queue = $queue;
 
@@ -290,7 +294,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setWorkerName(string $workerName)
+    public function setWorkerName($workerName)
     {
         $this->workerName = $workerName;
 
@@ -310,7 +314,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setCommand(string $command)
+    public function setCommand($command)
     {
         $this->command = $command;
 
@@ -350,7 +354,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setCreatedAt(\DateTime $createdAt)
+    public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
 
@@ -390,7 +394,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setCheckedAt(\DateTime $checkedAt)
+    public function setCheckedAt($checkedAt)
     {
         $this->checkedAt = $checkedAt;
 
@@ -450,7 +454,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setOutput(string $output)
+    public function setOutput($output)
     {
         $this->output = $output;
 
@@ -470,7 +474,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setErrorOutput(string $errorOutput)
+    public function setErrorOutput($errorOutput)
     {
         $this->errorOutput = $errorOutput;
 
@@ -490,7 +494,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setStackTrace(string $stackTrace)
+    public function setStackTrace($stackTrace)
     {
         $this->stackTrace = $stackTrace;
 
@@ -510,9 +514,29 @@ class BaseJob
      *
      * @return self
      */
-    public function setRuntime(int $runtime)
+    public function setRuntime($runtime)
     {
         $this->runtime = $runtime;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCpuUsage()
+    {
+        return $this->cpuUsage;
+    }
+
+    /**
+     * @param float $cpuUsage
+     *
+     * @return self
+     */
+    public function setCpuUsage($cpuUsage)
+    {
+        $this->cpuUsage = $cpuUsage;
 
         return $this;
     }
@@ -530,7 +554,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setMemoryUsage(int $memoryUsage)
+    public function setMemoryUsage($memoryUsage)
     {
         $this->memoryUsage = $memoryUsage;
 
@@ -538,21 +562,21 @@ class BaseJob
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public function getMemoryUsageReal()
+    public function getEnvironmentVariables()
     {
-        return $this->memoryUsageReal;
+        return $this->environmentVariables;
     }
 
     /**
-     * @param int $memoryUsageReal
+     * @param array $environmentVariables
      *
      * @return self
      */
-    public function setMemoryUsageReal(int $memoryUsageReal)
+    public function setEnvironmentVariables($environmentVariables)
     {
-        $this->memoryUsageReal = $memoryUsageReal;
+        $this->environmentVariables = $environmentVariables;
 
         return $this;
     }
@@ -570,7 +594,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setExitCode(int $exitCode)
+    public function setExitCode($exitCode)
     {
         $this->exitCode = $exitCode;
 
@@ -590,7 +614,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setErrorMessage(string $errorMessage)
+    public function setErrorMessage($errorMessage)
     {
         $this->errorMessage = $errorMessage;
         return $this;
@@ -609,7 +633,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setMaxRuntime(int $maxRuntime)
+    public function setMaxRuntime($maxRuntime)
     {
         $this->maxRuntime = $maxRuntime;
 
@@ -629,7 +653,7 @@ class BaseJob
      *
      * @return self
      */
-    public function setMaxRetries(int $maxRetries)
+    public function setMaxRetries($maxRetries)
     {
         $this->maxRetries = $maxRetries;
 
@@ -652,6 +676,26 @@ class BaseJob
     public function setDockerImageId($dockerImageId)
     {
         $this->dockerImageId = $dockerImageId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDockerContainerId()
+    {
+        return $this->dockerContainerId;
+    }
+
+    /**
+     * @param string $dockerContainerId
+     *
+     * @return self
+     */
+    public function setDockerContainerId($dockerContainerId)
+    {
+        $this->dockerContainerId = $dockerContainerId;
 
         return $this;
     }

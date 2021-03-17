@@ -3,6 +3,553 @@
 
 {% block content %}
     <div class="container-fluid mt-3">
-        <h1>Hello !</h1>
+        <div class="d-sm-flex align-items-center justify-content-between mb-4" style="justify-content: right">
+            <div>
+                <h2>Job: #{{ job.id }}</h2>
+            </div>
+
+                <div id="running-job-actions-container">
+
+
+                    {% if job.state == 'running' %}
+                        <div id="reload-btn" class="clickable d-none d-sm-inline-block " onclick="updateJobDisplay({{ job.id | raw }})">
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-sync"></i></a>
+                        </div>
+
+                        <div id="autorefresh-btn" class="clickable d-none d-sm-inline-block mr-2" onclick="toggleAutorefresh()">
+                            <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}</a>
+                        </div>
+
+                        <div id="stop-job-container" onclick="stopJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                <i class="fas fa-stop-circle fa-sm text-white-50"></i>
+                                {{ 'polkovnik.docker_jobs.actions.stop.label' | trans }}</a>
+                        </div>
+                    {% elseif job.state == 'new' or job.state == 'pending' %}
+                        <div id="cancel-job-container" onclick="cancelJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
+                            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                <i class="fas fa-trash fa-sm text-white-50"></i>
+                                {{ 'polkovnik.docker_jobs.actions.cancel.label' | trans }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+        </div>
+
+        <div class="row mt-3">
+
+            <div class="col-xl-12 col-lg-12">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.execution.label' | trans }}</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body" style="padding: 1.7rem;">
+                        <!-- JOB Execution information row 1 -->
+                        <div class="row">
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div id="state-key-value" class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.state' | trans }}</span>
+                                    {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
+
+                                    {% if job.state == 'new' %}
+                                        <span class="value">
+                                            <i class="fas fa-fw fa-clock"></i>
+                                            {{ key | trans }}
+                                        </span>
+                                    {% elseif job.state == 'pending' %}
+                                        <span class="value text-warning">
+                                            <i class="fas fa-hourglass-start"></i>
+                                            {{ key | trans }}
+                                        </span>
+                                    {% elseif job.state == 'running' %}
+                                        <span class="value text-primary">
+                                            <i class="fas fa-circle-notch spinner"></i>
+                                            {{ key | trans }}
+                                        </span>
+                                    {% elseif job.state == 'finished' %}
+                                        <span class="value text-success">
+                                            <i class="far fa-check-circle"></i>
+                                            {{ key | trans }}
+                                        </span>
+                                    {% elseif job.state == 'canceled' %}
+                                        <span class="value text-warning">
+                                            {{ key | trans }}
+                                        </span>
+                                    {% elseif job.state == 'failed' %}
+                                        <span class="value text-danger">
+                                            <i class="far fa-times-circle"></i>
+                                        </span>
+                                    {% elseif job.state == 'stopped' %}
+                                        <span class="value text-danger">
+                                            <i class="far fa-stop-circle"></i>
+                                            {{ key | trans }}
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.queue' | trans }}</span>
+                                    <span class="value">{{ job.queue }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.execution.worker' | trans }}</span>
+                                    <span class="value">{{ job.workerName }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}</span>
+                                    <span class="value code">{{ job.command }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- JOB Execution information row 2 -->
+                        <div class="row mt-4">
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.createdAt.label' | trans }}</span>
+                                    <span class="value">{{ job.createdAt | date('H:i:s d/m/Y') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.startedAt.label' | trans }}</span>
+                                    <span class="value">{{ job.startedAt | date('H:i:s d/m/Y') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.stoppedAt.label' | trans }}</span>
+                                    {% if job.stoppedAt is not null %}
+                                        <span class="value">{{ job.stoppedAt | date('H:i:s d/m/Y') }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.runtime.label' | trans }}</span>
+                                    <span id="job-runtime" class="value code">{{ get_job_runtime(job) }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- JOB Execution information row 2 -->
+                        <div class="row mt-4">
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.image.label' | trans }}</span>
+                                    <span class="value">{{ dockerImageId }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.container_id.label' | trans }}</span>
+                                    <span class="value" style="font-size: 14px;">{{ job.dockerContainerId }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.exit_code' | trans }}</span>
+                                    {% set class = 'text-success' %}
+                                    {% if job.exitCode is not null and job.exitCode > 0 %}
+                                        {% set class = 'text-danger' %}
+                                    {% endif %}
+                                    <span class="value {{ class }}">{{ job.exitCode }}</span>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                <div class="key-value">
+                                    <span class="key">{{ 'polkovnik.docker_jobs.error_message' | trans }}</span>
+                                    <span class="value text-danger">{{ job.errorMessage }}</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+                <div id="usage-stats-container" class="col-xl-12 col-lg-12 {% if job.state != 'running' %}d-none{% endif %}">
+                    <div class="card shadow mb-4">
+                        <!-- Card Header - Dropdown -->
+                        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                            <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.resource-utilization' | trans }}</h6>
+                        </div>
+                        <!-- Card Body -->
+                        <div class="card-body" style="padding: 1.7rem;">
+
+                            <!-- JOB Execution information row 2 -->
+                            <div class="row">
+
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <div class="key-value">
+                                        <span class="key">{{ 'polkovnik.docker_jobs.cpu' | trans }}</span>
+                                        <span id="cpu-display" class="value"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <div class="key-value">
+                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_usage' | trans }}</span>
+                                        <span id="memory-usage" class="value"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <div class="key-value">
+                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_used' | trans }}</span>
+                                        <span id="memory-used" class="value"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-4 col-lg-3">
+                                    <div class="key-value">
+                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_limit' | trans }}</span>
+                                        <span id="memory-available" class="value code"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            <div class="col-xl-12 col-lg-12">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+{#                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">#}
+{#                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.execution.label' | trans }}</h6>#}
+{#                    </div>#}
+                    <!-- Card Body -->
+                    <div class="card-body" style="padding: 0.7rem;">
+
+                        <ul class="nav nav-tabs modernize" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
+                                    {{ 'polkovnik.docker_jobs.logs' | trans }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
+                                    {{ 'polkovnik.docker_jobs.environment-variables' | trans }}
+                                </a>
+                            </li>
+                        </ul>
+
+                        <div class="ml-2 mt-2">
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                    <!-- LOGS  -->
+                                    <div class="log-console" >
+                                        <pre id="logging-console">{{ job.output }}</pre>
+                                        {% if job.output is not empty %}
+                                        <a href="#tail-hook" class="tail-btn">Tail logs</a>
+                                        {% endif %}
+                                    <div id="tail-hook"></div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                    <!-- ENVIRONMENT VARIABLES -->
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                            <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for var in job.environmentVariables %}
+                                                <tr class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">
+                                                    <td>{{ var['name'] }}</td>
+                                                    <td>{{ var['value'] }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
     </div>
+{% endblock %}
+
+{% block scrollToTop %}
+    <a class="scroll-to-top rounded" href="#page-top" onclick="removeTailhook()">
+        <i class="fas fa-angle-up"></i>
+    </a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        var jobUpdateInterval;
+
+        function removeTailhook() {
+            window.location.href.split('#')[0];
+        }
+
+{#        {% if job.state == 'running' %}#}
+
+            function stopJob(id) {
+                let route = '{{ path('polkovnik.docker_jobs.jobs.stop', {id: job.id}) | raw }}';
+                showLoader();
+                $.ajax({
+                    method: 'POST',
+                    url: route,
+                    success: (res) => {
+                        if (jobUpdateInterval != null) {
+                            clearInterval(jobUpdateInterval);
+                        }
+                        $('#stop-job-container').remove();
+                        $('#reload-btn').remove();
+                        $('#autorefresh-btn').remove();
+
+                        if (jobUpdateInterval != null) {
+                            clearInterval(jobUpdateInterval);
+                        }
+
+                        updateJobDisplay(id);
+                        hideLoader();
+                    },
+                    error: (e) => {
+                        console.log('[ERROR] ', e);
+                        hideLoader();
+                    }
+                })
+            }
+
+
+            let states = {
+                new: '{{ 'polkovnik.docker_jobs.state.new' | trans }}',
+                pending: '{{ 'polkovnik.docker_jobs.state.pending' | trans }}',
+                canceled: '{{ 'polkovnik.docker_jobs.state.canceled' | trans }}',
+                running: '{{ 'polkovnik.docker_jobs.state.running' | trans }}',
+                finished: '{{ 'polkovnik.docker_jobs.state.finished' | trans }}',
+                failed: '{{ 'polkovnik.docker_jobs.state.failed' | trans }}',
+                stopped: '{{ 'polkovnik.docker_jobs.state.stopped' | trans }}'
+            };
+
+            function updateStateDisplay(state) {
+                console.log('STATE: ' , state)
+                let container = $('#state-key-value');
+                let valueContainer = $('#state-key-value .value');
+                if (valueContainer != null) {
+                    let html = null;
+                    if (state === 'running') {
+                        html = `<span class="value text-primary">
+                                   <i class="fas fa-circle-notch spinner"></i>
+                                   ${states[state]}
+                                </span>`;
+                    } else if (state === 'finished') {
+                        html = `<span class="value text-success">
+                                   <i class="far fa-check-circle"></i>
+                                   ${states[state]}
+                                </span>`;
+                    } else if (state === 'canceled') {
+                        html = `<span class="value text-warning">
+                                   ${states[state]}
+                                </span>`;
+                    } else if (state === 'stopped') {
+                        html = `<span class="value text-danger">
+                                   <i class="far fa-stop-circle"></i>
+                                   ${states[state]}
+                                </span>`;
+                    } else if (state === 'failed') {
+                        html = `<span class="value text-danger">
+                                   <i class="far fa-times-circle"></i>
+                                   ${states[state]}
+                                </span>`;
+                    }
+
+                    if (html != null) {
+                        valueContainer.html(html);
+                    }
+
+                    if (state !== 'running') {
+                        let stopBtnContainer = $('#stop-job-container');
+                        if (stopBtnContainer != null) {
+                            stopBtnContainer.remove();
+                        }
+                    }
+                }
+            }
+
+            function updateJobDisplay (id) {
+                let route = '{{ path('polkovnik.docker_jobs.jobs.details.json', {id: job.id, logs: true}) | raw }}';
+                // let logConsole = $('#logging-console').text();
+                // if (logConsole != null && logConsole.length > 0) {
+                //     route += '?logs_pointer=' + logConsole.length;
+                // }
+
+                $.ajax({
+                    METHOD: 'GET',
+                    url: route,
+                    success: (res) => {
+                        console.log('DATA: ', res);
+                        if (res != null && res.status === 200) {
+                            let stats = res.data;
+                            updateStateDisplay(stats.state);
+
+                            if (stats.cpu != null) {
+                                let cpu = stats.cpu;
+                                $('#cpu-display').text(`${cpu.toFixed(2)}%`);
+                            }
+                            if (stats['memoryPercent'] != null) {
+                                let percent = stats['memoryPercent'];
+                                $('#memory-usage').text(`${percent.toFixed(2)}%`);
+                            }
+                            if (stats['usedMemory'] != null) {
+                                let memory = stats['usedMemory'];
+                                $('#memory-used').text(getHumanReadableSize(memory));
+                            }
+                            if (stats['availableMemory'] != null) {
+                                let memory = stats['availableMemory'];
+                                $('#memory-available').text(getHumanReadableSize(memory));
+                            }
+                            if (stats['runtime'] != null) {
+                                let runtime = stats['runtime'];
+                                $('#job-runtime').text(runtime);
+                            }
+
+                            if (stats.logs != null) {
+                                $('#logging-console').text(stats.logs)
+                            }
+
+                        }
+                    },
+                    error: (e) => {
+
+                    }
+                })
+            }
+
+            function toggleAutorefresh() {
+                let reloadBtn = $('#reload-btn i');
+                let autorefreshBtn = $('#autorefresh-btn');
+                let autorefreshText = $('#autorefresh-btn #autorefresh-text');
+
+                if (autorefreshBtn.hasClass('active')) {
+                    autorefreshBtn.removeClass('active');
+                    reloadBtn.removeClass('spinner');
+                    autorefreshText.text('{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}')
+
+                    clearInterval(jobUpdateInterval);
+                } else {
+                    autorefreshBtn.addClass('active');
+                    reloadBtn.addClass('spinner');
+                    autorefreshText.text('{{ 'polkovnik.docker_jobs.stop_auto_refresh' | trans }}')
+
+                    let jobId = '{{ job.id | raw }}';
+                    updateJobDisplay(jobId)
+                    jobUpdateInterval = setInterval(() => updateJobDisplay(jobId, 10000));
+                }
+            }
+
+            // $(document).ready(() => {
+            {#    jobUpdateInterval = setInterval(() => updateJobDisplay('{{ job.id | raw }}'), 5000)#}
+            // })
+
+
+        {% if job.state == 'new' or job.state == 'pending' %}
+            function checkIfJobStarted() {
+                let jobId = '{{ job.id | raw }}';
+                $.ajax({
+                    method: 'GET',
+                    url: '{{ path('polkovnik.docker_jobs.jobs.details.json', {id: job.id }) | raw }}',
+                    success: (res) => {
+                        if (res.status === 200) {
+                            if (res.data.state === 'running') {
+
+                                let html = `<div id="reload-btn" class="clickable d-none d-sm-inline-block " onclick="updateJobDisplay({{ job.id | raw }})">
+                                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-sync"></i></a>
+                                            </div>
+
+                                            <div id="autorefresh-btn" class="clickable d-none d-sm-inline-block mr-2" onclick="toggleAutorefresh()">
+                                                <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}</a>
+                                            </div>
+
+                                            <div id="stop-job-container" onclick="stopJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
+                                                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
+                                                    <i class="fas fa-stop-circle fa-sm text-white-50"></i>
+                                                    {{ 'polkovnik.docker_jobs.actions.stop.label' | trans }}</a>
+                                            </div>`;
+
+                                $('#running-job-actions-container').html(html);
+                                $('#usage-stats-container').removeClass('d-none');
+
+                                updateJobDisplay(jobId);
+                                if (jobUpdateInterval != null) {
+                                    clearInterval(jobUpdateInterval);
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+
+            jobUpdateInterval = setInterval(() => checkIfJobStarted(), 10000);
+
+            function cancelJob(id) {
+                $.ajax({
+                    method: 'DELETE',
+                    url: "{{ path('polkovnik.docker_jobs.jobs.cancel', {id: job.id}) }}",
+                    success: (res) => {
+                        if (res.status === 200) {
+                            $('#cancel-job-container').remove();
+
+                            updateJobDisplay(id);
+                            updateStateDisplay('canceled');
+                        }
+                    }
+                })
+            }
+
+        {% endif %}
+
+
+{#        {% endif %}#}
+    </script>
+
+    {% if job.state == 'running' %}
+    {% endif %}
 {% endblock %}

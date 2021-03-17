@@ -19,19 +19,31 @@ class DockerJobsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.yaml');
-        $loader->load('console.yaml');
+        $loader->load('services.yml');
+        $loader->load('console.yml');
 
         if (empty($config['class']['job'])) {
             throw new InvalidConfigurationException('"docker_jobs.class.job" parameter must be defined.');
         }
 
-        $container->setParameter('docker_jobs.docker_unix_socket_path', $config['docker_unix_socket_path']);
-        $container->setParameter('docker_jobs.docker_base_uri', $config['docker_base_uri']);
-        $container->setParameter('docker_jobs.docker_image_id', $config['docker_image_id']);
-        $container->setParameter('docker_jobs.docker_working_dir', $config['docker_working_dir']);
+        if (empty($config['docker']['unix_socket_path'])) {
+            throw new InvalidConfigurationException('"docker_jobs.docker.unix_socket_path" parameter must be defined.');
+        }
+
+        if (empty($config['docker']['default_image_id'])) {
+            throw new InvalidConfigurationException('"docker_jobs.docker.default_image_id" parameter must be defined.');
+        }
+
+        if (empty($config['docker']['container_working_dir'])) {
+            throw new InvalidConfigurationException('"docker_jobs.docker.container_working_dir" parameter must be defined.');
+        }
+
         $container->setParameter('docker_jobs.class.job', $config['class']['job']);
         $container->setParameter('docker_jobs.runtime.concurrency_limit', $config['runtime']['concurrency_limit']);
+        $container->setParameter('docker_jobs.docker.unix_socket_path', $config['docker']['unix_socket_path']);
+        $container->setParameter('docker_jobs.docker.api_base_uri', $config['docker']['api_base_uri']);
+        $container->setParameter('docker_jobs.docker.default_image_id', $config['docker']['default_image_id']);
+        $container->setParameter('docker_jobs.docker.container_working_dir', $config['docker']['container_working_dir']);
 
         $this->addAnnotatedClassesToCompile([
             'Polkovnik\\DockerJobsBundle\\Controller\\MonitoringController'

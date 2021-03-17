@@ -1,0 +1,64 @@
+{% extends '@DockerJobs/layout.html.twig' %}
+{% trans_default_domain 'DockerJobsBundle' %}
+
+{% block content %}
+    <div class="container-fluid mt3">
+
+        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-3" style="justify-content: right">
+            <div>
+                <h2>{{ 'polkovnik.docker_jobs.actions.submit_job' | trans }}</h2>
+            </div>
+        </div>
+
+
+        <div class="row mt-3">
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="card shadow mb-4">
+                    <!-- Card Header - Dropdown -->
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.form' | trans }}</h6>
+                    </div>
+                    <!-- Card Body -->
+                    <div class="card-body" style="padding: 1.7rem;">
+
+                        {{ form_start(form) }}
+                        <div class="row">
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ form_label(form.command) }}
+                                    {{ form_widget(form.command, { attr: { class: 'form-control', placeholder: 'polkovnik.docker_jobs.fields.command.label' | trans } }) }}
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ form_label(form.queue) }}
+                                    {{ form_widget(form.queue, { attr: { class: 'form-control', placeholder: 'polkovnik.docker_jobs.queue' | trans } }) }}
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ form_label(form.dockerImageId) }}
+                                    {{ form_widget(form.dockerImageId, { attr: { class: 'form-control', placeholder: 'polkovnik.docker_jobs.image.label' | trans } }) }}
+                                </div>
+                            </div>
+
+                            <div class="d-sm-none d-xl-block d-lg-block col-lg-6 col-xl-7"></div>
+                            <div class="mt-3 col-sm-12 col-md-12, col-lg-6, col-xl-5 float-right">
+                                <div class="form-group">
+                                    <button type="submit" class="form-control btn btn-primary">{{ 'polkovnik.docker_jobs.fields.submit.label' | trans }}</button>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_end(form) }}
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}

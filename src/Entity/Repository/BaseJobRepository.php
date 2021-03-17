@@ -12,6 +12,7 @@ class BaseJobRepository extends EntityRepository
     public static function getPeriods()
     {
         return [
+            'all'           => 'polkovnik.docker_jobs.all_period',
             'last-hour'     => 'polkovnik.docker_jobs.last_hour',
             'today'         => 'polkovnik.docker_jobs.today',
             'last-7-days'   => 'polkovnik.docker_jobs.last_7_days',
@@ -81,6 +82,7 @@ class BaseJobRepository extends EntityRepository
         $totalPages = (int) ceil($total / $perPage);
         $offset = ($page - 1) * $perPage;
 
+        $qb->orderBy('j.id', 'DESC');
         $qb->setMaxResults($perPage);
 
         if ($offset > 0) {
@@ -105,10 +107,10 @@ class BaseJobRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('j');
 
-        if (!empty($options['state'])) {
+        if (!empty($state)) {
             $qb
                 ->where('j.state = :state')
-                ->setParameter('state', $options['state'])
+                ->setParameter('state', $state)
             ;
         }
 
@@ -325,6 +327,8 @@ class BaseJobRepository extends EntityRepository
                 ->setParameter('from', $date)
                 ->setParameter('to', $date2)
             ;
+        } else if ($period === 'all') {
+
         } else {
             throw new \InvalidArgumentException(sprintf('Unsupported period type "%s"', $period));
         }
@@ -343,7 +347,7 @@ class BaseJobRepository extends EntityRepository
 
         if (!empty($filters['command'])) {
             $qb
-                ->andWhere('j.command = :command')
+                ->andWhere('j.command LIKE :command')
                 ->setParameter('command', '%' . $filters['command'] . '%')
             ;
         }

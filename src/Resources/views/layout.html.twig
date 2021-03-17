@@ -46,6 +46,16 @@
             </a>
         {% endblock %}
 
+        {% block jsLoader %}
+            <div id="loader-overlay" class="loader-overlay"></div>
+            <div id="loader-container" class="loader-container">
+                <div class="js-loader">
+                    <i class="fas fa-circle-notch text-primary spinner"></i>
+                    <span class="d-block text text-secondary mt-4" style="font-size: 16px;">Veuillez patienter</span>
+                </div>
+            </div>
+        {% endblock %}
+
         {% block javascripts %}
             <script src="{{ asset('bundles/dockerjobs/js/jquery.min.js') }}"></script>
             <script src="{{ asset('bundles/dockerjobs/js/bootstrap.bundle.min.js') }}"></script>
