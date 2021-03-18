@@ -11,6 +11,10 @@ Uses Docker containers to run and handle your jobs.
   * [Bundle Configuration](#bundle-configuration)
 * [Next steps](#next-steps)
   * [Console commands](docs/console.md)
+    * [Job orchestration command](docs/console.md#job-orchestration-command)
+    * [Job submission command](docs/console.md#job-submission-command)
+    * [Stop job command](docs/console.md#stop-job-command)
+    * [Orphan job cleaning command](docs/console.md#clean-orphan-jobs-command)
   * [Job Monitoring Dashboard](docs/dashboard.md)
 
 Installation

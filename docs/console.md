@@ -5,6 +5,7 @@ There are a few commands to perform various actions.
 * [Job orchestration command](#job-orchestration-command)
 * [Job submission command](#job-submission-command)
 * [Stop job command](#stop-job-command)
+* [Orphan job cleaning command](#clean-orphan-jobs-command)
 
 ## Job orchestration command
 This command is the core of this bundle, it is this command that will run and handle all your jobs.  

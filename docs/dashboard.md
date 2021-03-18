@@ -36,6 +36,6 @@ polkovnik_docker_jobs:
 
 ```
 
-**Important note:**  
+### Important note:
 For the moment, there is no Authentication protecting these routes.  
 If you want to protect them, you must do it yourself in `security.yaml` under `access_control:`.
