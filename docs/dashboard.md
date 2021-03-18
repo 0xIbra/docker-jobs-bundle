@@ -3,18 +3,20 @@ Monitoring Dashboard
 
 To manage and monitor jobs, there is a dashboard interface that you can activate.
 
+* [Preview](#preview)
+* [Configuration](#configuration)
 
 
 ### Preview
-<div style="display: flex;">
+<div style="display: block;">
   <div style="margin-right: 20px">
     <h4>Job detail</h4>
-    <img src="assets/docker-jobs-job-detail.jpg" width="400" />
+    <img src="assets/docker-jobs-job-detail.jpg" style="max-width: 600px"/>
   </div>
 
   <div>
     <h4>Dashboard</h4>
-    <img src="assets/docker-jobs-dashboard.png" width="400" />
+    <img src="assets/docker-jobs-dashboard.png" style="max-width: 600px" />
   </div>
 </div>
 

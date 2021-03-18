@@ -114,5 +114,5 @@ At this point, you should be good, the configuration is done.
 
 Next steps
 ---------
- - Check out the [Console commands](#docs/console.md) to get the system up and running.
- - Check out the [Monitoring dashboard](#docs/dashboard.md) that you can activate if you wish.
+ - Check out the [Console commands](docs/console.md) to get the system up and running.
+ - Check out the [Monitoring dashboard](docs/dashboard.md) that you can activate if you wish.
