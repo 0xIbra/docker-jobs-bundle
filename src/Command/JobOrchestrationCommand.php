@@ -179,11 +179,19 @@ class JobOrchestrationCommand extends Command
             }
 
             foreach($this->stoppedContainers as $containerId) {
-                $container = $this->docker->getClient()->inspectContainer($containerId);
-                $jobId = (int) $container['Config']['Labels']['job_id'];
+                try {
+                    $container = $this->docker->getClient()->inspectContainer($containerId);
+                    $jobId = (int) $container['Config']['Labels']['job_id'];
 
-                /** @var BaseJob $job */
-                $job = $this->jobRepository->find($jobId);
+                    /** @var BaseJob $job */
+                    $job = $this->jobRepository->find($jobId);
+                } catch (\Exception $e) {
+                    if ($e->getCode() === 404) {
+                        $this->log('warning', sprintf('container not found: %s ' . PHP_EOL . 'may have been deleted manually by someone.', $containerId));
+                    }
+
+                    continue;
+                }
 
                 if (!empty($container['State']['FinishedAt'])) {
                     $date = $this->docker->getDateTime($container['State']['FinishedAt']);

@@ -21,3 +21,11 @@ services:
       - '@polkovnik.docker_jobs.service.docker'
     tags:
       - { name: console.command }
+
+  polkovnik.docker_jobs.command.clean_jobs:
+    class: Polkovnik\DockerJobsBundle\Command\CleanOrphanJobsCommand
+    arguments:
+      - '@service_container'
+      - '@polkovnik.docker_jobs.service.docker'
+    tags:
+      - { name: console.command }
