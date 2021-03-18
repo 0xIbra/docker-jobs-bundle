@@ -10,8 +10,8 @@ Uses Docker containers to run and handle your jobs.
   * [Docker Image](#docker-image)
   * [Bundle Configuration](#bundle-configuration)
 * [Next steps](#next-steps)
-  * [Console commands](#docs/console.md)
-  * [Job Monitoring Dashboard](#docs/dashboard.md)
+  * [Console commands](docs/console.md)
+  * [Job Monitoring Dashboard](docs/dashboard.md)
 
 Installation
 ------------
