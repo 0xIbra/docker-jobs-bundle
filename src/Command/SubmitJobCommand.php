@@ -2,6 +2,7 @@
 
 namespace Polkovnik\DockerJobsBundle\Command;
 
+use Polkovnik\DockerJobsBundle\Event\JobSubmittedEvent;
 use Polkovnik\DockerJobsBundle\Manager\JobManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,7 +29,7 @@ class SubmitJobCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:docker-jobs:submit')
+            ->setName('polkovnik:jobs:submit')
             ->setDescription('Creates a new job and submits it to a queue for processing.')
             ->addOption('--command', null, InputOption::VALUE_REQUIRED, 'command to execute.')
             ->addOption('--queue', null, InputOption::VALUE_OPTIONAL, 'queue where to submit the job.', 'default')
@@ -57,6 +58,10 @@ class SubmitJobCommand extends Command
             'dockerImageId' => $dockerImageId,
         ]);
 
-        $output->writeln('<info>Job successfully created.</info>');
+        $event = new JobSubmittedEvent();
+        $event->setJob($job);
+        $this->container->get('event_dispatcher')->dispatch($event->getCode(), $event);
+
+        $output->writeln(sprintf('<info>Job submitted with ID: %s</info>', $job->getId()));
     }
 }

@@ -7,6 +7,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Polkovnik\DockerClient;
 use Polkovnik\DockerJobsBundle\Entity\BaseJob;
 use Polkovnik\DockerJobsBundle\Entity\Repository\BaseJobRepository;
+use Polkovnik\DockerJobsBundle\Event\JobFailedEvent;
+use Polkovnik\DockerJobsBundle\Event\JobFinishedEvent;
+use Polkovnik\DockerJobsBundle\Event\JobRunningEvent;
+use Polkovnik\DockerJobsBundle\Event\JobStoppedEvent;
 use Polkovnik\DockerJobsBundle\Exception\DockerImageNotFoundException;
 use Polkovnik\DockerJobsBundle\Service\DockerService;
 use Symfony\Component\Console\Command\Command;
@@ -14,6 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class JobOrchestrationCommand extends Command
 {
@@ -26,6 +31,9 @@ class JobOrchestrationCommand extends Command
 
     /** @var EntityManagerInterface */
     private $em;
+
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
 
     /** @var BaseJobRepository */
     private $jobRepository;
@@ -48,6 +56,9 @@ class JobOrchestrationCommand extends Command
     /** @var array */
     private $stoppedContainers = [];
 
+    /** @var array */
+    private $logPointers;
+
     /** @var OutputInterface */
     private $output;
 
@@ -56,6 +67,7 @@ class JobOrchestrationCommand extends Command
         $this->container = $container;
         $this->docker = $docker;
         $this->em = $container->get('doctrine')->getManager();
+        $this->eventDispatcher = $container->get('event_dispatcher');
         $this->jobRepository = $this->em->getRepository($this->container->getParameter('docker_jobs.class.job'));
 
         $this->concurrency = $this->container->getParameter('docker_jobs.runtime.concurrency_limit');
@@ -66,9 +78,11 @@ class JobOrchestrationCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:docker-jobs:orchestrate')
-            ->setDescription('Coming soon...')
+            ->setName('polkovnik:jobs:orchestrate')
+            ->setDescription('Orchestrates Docker containers and handles them in their different stages.')
             ->addOption('--queue', null, InputOption::VALUE_OPTIONAL, 'Queue to process.')
+            ->addOption('--update-logs-eager', null, InputOption::VALUE_OPTIONAL, 'When enabled, updates the logs of running jobs every few seconds, otherwise only updates at the end of the job.', true)
+            ->addOption('--concurrency', null, InputOption::VALUE_OPTIONAL, 'Specify how many jobs you want to run concurrently.', 4)
         ;
     }
 
@@ -77,17 +91,22 @@ class JobOrchestrationCommand extends Command
         $this->output = $output;
         $this->checkRequirements();
 
-        try {
+//        try {
             $this->safeExecute($input, $output);
-        } catch (\Exception $exception) {
-            dump($exception->getMessage());
-            dd($exception->getTraceAsString());
-        }
+//        } catch (\Exception $exception) {
+//            dump($exception->getMessage());
+//            dd($exception->getTraceAsString());
+//        }
     }
 
     protected function safeExecute(InputInterface $input, OutputInterface $output)
     {
         $firstTime = true;
+        $inputOptions = $input->getOptions();
+        $eagerUpdateLogs = $inputOptions['update-logs-eager'];
+        if (!empty($inputOptions['concurrency']) && $inputOptions['concurrency'] > 0) {
+            $this->concurrency = $inputOptions['concurrency'];
+        }
 
         while (true) {
 
@@ -114,19 +133,48 @@ class JobOrchestrationCommand extends Command
                 $container = $this->docker->getClient()->inspectContainer($containerId);
                 $jobId = (int) $container['Config']['Labels']['job_id'];
 
-                file_put_contents('container.json', json_encode($container));
-                exit;
-
                 /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
 
-                $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
-                $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
-                $job
-                    ->setOutput((string) $containerLogs)
-                    ->setErrorOutput((string) $errorLogs)
-                    ->setState(BaseJob::STATE_RUNNING)
-                ;
+                if ($eagerUpdateLogs === true) {
+                    $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
+                    $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
+
+                    $job
+                        ->setOutput((string) $containerLogs)
+                        ->setErrorOutput((string) $errorLogs)
+                    ;
+                }
+
+                try {
+                    if ($job->getEnvironmentVariables() === null) {
+                        $environmentVars = [];
+                        $environmentVarsTemp = $container['Config']['Env'];
+                        foreach ($environmentVarsTemp as $var) {
+                            $var = explode('=', $var);
+
+                            $environmentVars[] = ['name' => $var[0], 'value' => $var[1]];
+                        }
+
+                        if (!empty($environmentVarsTemp)) {
+                            $job->setEnvironmentVariables($environmentVars);
+                        }
+                    }
+                } catch (\Exception $e) {}
+
+                if ($job->getState() !== BaseJob::STATE_RUNNING) {
+                    $job->setState(BaseJob::STATE_RUNNING);
+                }
+
+                if ($job->getStartedAt() === null) {
+                    if (!empty($container['State']['StartedAt'])) {
+                        $date = $this->docker->getDateTime($container['State']['StartedAt']);
+                        if ($date !== false && $date !== null) {
+                            $job->setStartedAt($date);
+                        }
+                    }
+                }
+
                 $this->em->persist($job);
             }
 
@@ -137,16 +185,41 @@ class JobOrchestrationCommand extends Command
                 /** @var BaseJob $job */
                 $job = $this->jobRepository->find($jobId);
 
-                if (!empty($container['State']['StartedAt']))
+                if (!empty($container['State']['FinishedAt'])) {
+                    $date = $this->docker->getDateTime($container['State']['FinishedAt']);
+                    if ($date !== false && $date !== null) {
+                        $job->setStoppedAt($date);
+
+                        $started = $job->getStartedAt();
+                        if ($started === null) {
+                            $started = $job->getStartedAtFallback();
+                        }
+
+                        $finished = $job->getStoppedAt();
+                        $diff = $finished->getTimestamp() - $started->getTimestamp();
+                        $job->setRuntime($diff);
+                    }
+                }
 
                 $state = BaseJob::STATE_FINISHED;
                 if ($container['State']['ExitCode'] !== 0) {
                     $state = BaseJob::STATE_FAILED;
+                    if ($container['State']['ExitCode'] === 137) {
+                        $this->em->refresh($job);
+                        if ($job->getState() === BaseJob::STATE_STOPPED) {
+                            $state = BaseJob::STATE_STOPPED;
+                        }
+                    }
+
+                    $errorMessage = null;
+                    if (!empty($container['State']['Error'])) {
+                        $errorMessage = $container['State']['Error'];
+                    }
                     $job
-                        ->setErrorMessage($container['State']['Error'])
-                        ->setExitCode($container['State']['ExitCode'])
+                        ->setErrorMessage($errorMessage)
                     ;
                 }
+                $job->setExitCode($container['State']['ExitCode']);
 
                 $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
                 $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
@@ -161,9 +234,21 @@ class JobOrchestrationCommand extends Command
                 $exitCode = $container['State']['ExitCode'];
                 if ($exitCode === 0) {
                     $this->log('success', 'job finished with success', $job);
+
+                    $event = new JobFinishedEvent();
+                    $event->setJob($job);
+                } else if ($exitCode === 137 && $job->getState() === BaseJob::STATE_STOPPED) {
+                    $this->log('warning', 'job stopped', $job);
+
+                    $event = new JobStoppedEvent();
+                    $event->setJob($job);
                 } else {
-                    $this->log('error', 'job exited with code: ' . $exitCode, $job);
+                    $this->log('warning', 'job exited with code: ' . $exitCode, $job);
+
+                    $event = new JobFailedEvent();
+                    $event->setJob($job);
                 }
+                $this->eventDispatcher->dispatch($event->getCode(), $event);
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
@@ -183,7 +268,7 @@ class JobOrchestrationCommand extends Command
     {
         $this->docker->getClient()->info();
 
-        $dockerImage = $this->container->getParameter('docker_jobs.docker_image_id');
+        $dockerImage = $this->container->getParameter('docker_jobs.docker.default_image_id');
         if (!$this->docker->imageExists($dockerImage)) {
             throw new DockerImageNotFoundException(sprintf('"%s" docker image does not exist.', $dockerImage));
         }
@@ -192,9 +277,9 @@ class JobOrchestrationCommand extends Command
     protected function runJob(BaseJob $job)
     {
         $job
-            ->setStartedAt(new \DateTime())
             ->setWorkerName(gethostname())
             ->setState(BaseJob::STATE_PENDING)
+            ->setStartedAtFallback(new \DateTime())
         ;
 
         $dockerConfig = $this->docker->getJobConfig($job);
@@ -204,8 +289,13 @@ class JobOrchestrationCommand extends Command
         if ($id === false) {
             throw new \Exception('could not run job.');
         }
+        $job->setDockerContainerId($id);
 
-        $this->log('info', 'new job starting.', $job);
+        $this->log('info', 'new job starting', $job);
+
+        $event = new JobRunningEvent();
+        $event->setJob($job);
+        $this->eventDispatcher->dispatch($event->getCode(), $event);
 
         $this->runningContainers[$id] = $id;
     }
@@ -220,7 +310,13 @@ class JobOrchestrationCommand extends Command
         $this->runningContainers = [];
         $this->stoppedContainers = [];
 
-        $containers = $this->docker->getClient()->listContainers(DockerService::ORCHESTRATION_DOCKER_LABEL);
+        $options = [
+            'all'   => true,
+            'filters' => json_encode([
+                'label' => [DockerService::ORCHESTRATION_DOCKER_LABEL],
+            ]),
+        ];
+        $containers = $this->docker->getClient()->listContainers($options);
 
         foreach ($containers as $container) {
             $state = $container['State'];
@@ -248,10 +344,12 @@ class JobOrchestrationCommand extends Command
 
     private function log($level, $text, BaseJob $job = null)
     {
+        $date = new \DateTime();
+        $date = $date->format('Y-m-d\\TH:i:s');
         if ($job !== null) {
-            $text = sprintf('[%s][job #%s] %s', $level, $job->getId(), $text);
+            $text = sprintf('[%s][%s][job #%s] %s', $date, $level, $job->getId(), $text);
         } else {
-            $text = sprintf('[%s] %s', $level, $text);
+            $text = sprintf('[%s][%s] %s', $date, $level, $text);
         }
 
         if ($level === 'info') {

@@ -2,7 +2,7 @@
 
 namespace Polkovnik\DockerJobsBundle\Service;
 
-use Polkovnik\Component\DockerClient;
+use Polkovnik\Component\DockerClient\DockerClient;
 use Polkovnik\DockerJobsBundle\Entity\BaseJob;
 use Polkovnik\DockerJobsBundle\Manager\JobManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,14 +41,49 @@ class DockerService
             $this->docker = new DockerClient($options);
         }
 
-        $this->dockerImage = $container->getParameter('docker_jobs.docker_image_id');
-        $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker_working_dir');
+        $this->dockerImage = $container->getParameter('docker_jobs.docker.default_image_id');
+        $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker.container_working_dir');
         $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
     }
 
     public function getClient()
     {
         return $this->docker;
+    }
+
+    public function getContainerUsage($id)
+    {
+        try {
+            $stats = $this->docker->getContainerStats($id);
+            $usage = [];
+
+            if (!empty($stats['cpu_stats']['cpu_usage']['total_usage']) &&
+                !empty($stats['precpu_stats']['cpu_usage']['total_usage']) &&
+                !empty($stats['cpu_stats']['system_cpu_usage']) && $stats['precpu_stats']['system_cpu_usage']) {
+
+                $cpuDelta = $stats['cpu_stats']['cpu_usage']['total_usage'] - $stats['precpu_stats']['cpu_usage']['total_usage'];
+                $systemDelta = $stats['cpu_stats']['system_cpu_usage'] - $stats['precpu_stats']['system_cpu_usage'];
+                $cpuUsage = ($cpuDelta / $systemDelta) * $stats['cpu_stats']['online_cpus'] * 100;
+
+                $usage['cpu'] = $cpuUsage;
+            }
+
+            if (!empty($stats['memory_stats']['usage']) && !empty($stats['memory_stats']['stats']['cache']) &&
+                !empty($stats["memory_stats"]["limit"])) {
+                $usedMemory = $stats['memory_stats']['usage'] - $stats['memory_stats']['stats']['cache'];
+                $availableMemory = $stats['memory_stats']['limit'];
+
+                $memoryUsagePercent = ($usedMemory / $availableMemory) * 100.0;
+
+                $usage['memoryPercent'] = $memoryUsagePercent;
+                $usage['usedMemory'] = $usedMemory;
+                $usage['availableMemory'] = $availableMemory;
+            }
+
+            return $usage;
+        } catch (\Exception $exception) {}
+
+        return null;
     }
 
     public function imageExists($name)
@@ -60,6 +95,39 @@ class DockerService
         } catch (\Exception $exception) {}
 
         return false;
+    }
+
+    public function stopJob(BaseJob $job, $deleteContainer = false)
+    {
+        try {
+            $containerId = $job->getDockerContainerId();
+            $stop = $this->docker->stopContainer($containerId);
+            $logs = $this->docker->getContainerLogs($containerId);
+            $job->setOutput($logs);
+
+            if ($stop === true) {
+                if ($deleteContainer === true) {
+                    $deleted = $this->docker->deleteContainer($containerId);
+                    if ($deleted) {
+                        return true;
+                    }
+                }
+
+                return true;
+            }
+
+        } catch (\Exception $exception) {}
+
+        return false;
+    }
+
+    public function getDockerImages()
+    {
+        try {
+            return $this->docker->listImages();
+        } catch (\Exception $e) {}
+
+        return null;
     }
 
     public function getJobConfig(BaseJob $job)
@@ -82,9 +150,22 @@ class DockerService
                 'job_id' => (string) $job->getId(),
             ],
             'WorkingDir' => $this->dockerWorkingDir,
-            'Env' => [sprintf('%s=true', self::DOCKER_JOB_IDENTIFYING_ENV)]
+            'Env' => [sprintf('%s=true', self::DOCKER_JOB_IDENTIFYING_ENV), 'TZ=Europe/Paris']
         ];
 
         return $config;
+    }
+
+    /**
+     * @param $dateString
+     *
+     * @return \DateTime|false
+     */
+    public function getDateTime($dateString)
+    {
+        $date = \DateTime::createFromFormat('Y-m-d\\TH:i:s.u+', $dateString);
+        $date->modify('+1 hour');
+
+        return $date;
     }
 }

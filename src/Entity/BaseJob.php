@@ -87,6 +87,13 @@ class BaseJob
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
+    protected $startedAtFallback;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
     protected $checkedAt;
 
     /**
@@ -377,6 +384,26 @@ class BaseJob
     public function setStartedAt($startedAt)
     {
         $this->startedAt = $startedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartedAtFallback()
+    {
+        return $this->startedAtFallback;
+    }
+
+    /**
+     * @param \DateTime $startedAtFallback
+     *
+     * @return self
+     */
+    public function setStartedAtFallback($startedAtFallback)
+    {
+        $this->startedAtFallback = $startedAtFallback;
 
         return $this;
     }
