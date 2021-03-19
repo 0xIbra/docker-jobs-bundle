@@ -11,13 +11,13 @@ use Polkovnik\DockerJobsBundle\Event\JobStoppedEvent;
 use Polkovnik\DockerJobsBundle\Event\JobSubmittedEvent;
 use Polkovnik\DockerJobsBundle\Form\SubmitType;
 use Psr\Container\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class MonitoringController extends AbstractController
+class MonitoringController extends Controller
 {
     /** @var EntityManagerInterface */
     private $em;
