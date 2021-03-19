@@ -167,7 +167,7 @@ class BaseJobRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('j');
         $qb
-            ->select('j.createdAt, count(j.id) AS count')
+            ->select('j.createdAt, count(j.id) AS jobCount')
             ->orderBy('j.createdAt', 'ASC')
             ->groupBy('j.createdAt')
         ;
@@ -244,7 +244,7 @@ class BaseJobRepository extends EntityRepository
         $res = $qb->getQuery()->execute();
         foreach ($res as $item) {
             $date = $item['createdAt'];
-            $count = (int) $item['count'];
+            $count = (int) $item['jobCount'];
 
             if ($period === 'last-hour') {
                 $minute = $date->format('i');
