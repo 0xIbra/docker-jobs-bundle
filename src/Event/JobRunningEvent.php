@@ -3,7 +3,7 @@
 namespace Polkovnik\DockerJobsBundle\Event;
 
 use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 class JobRunningEvent extends Event
 {
