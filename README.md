@@ -38,7 +38,7 @@ The configuration process is a bit lengthy, follow all the steps shown below.
 
 --------------------------------------------------------------------------------
 
-#### Job Entity
+### Job Entity
 You must create your Job entity and extend of BaseJob class.
 ```php
 <?php
@@ -55,13 +55,13 @@ class Job extends BaseJob
 As long as you extend it of `BaseJob`, the bundle will work correctly.
 
 --------------------------------------------------------------------------------
-#### Docker configuration
+### Docker configuration
 For this bundle to work, 2 actions you must perform.
 
 If the **Docker socket permission** step is not completed,  
 the bundle will throw an **exception** as it is not able to connect to **Docker**.
 
-##### Docker socket permission
+#### Docker socket permission
 
 By default, in most cases, **PHP** does not have permission to access the docker socket
 which be default on linux is located at `/var/run/docker.sock`.
@@ -77,7 +77,7 @@ By doing this, you give everyone read-write-execute permissions to this file to 
 If you are concerned with security, then you can give these permissions only to the **PHP** user.
 
 
-##### Docker Image
+#### Docker Image
 
 If not already done, you must create a Docker image which will be used to execute your jobs.  
 
@@ -87,7 +87,7 @@ This bundle allows use of different images for each job but requires a default i
 --------------------------------------------------------------------------------
 
 
-#### Bundle Configuration
+### Bundle Configuration
 Once you've got your Job entity and Docker image ready, the last step is to configure the bundle.
 
 If not already done, include the bundle to your project:
@@ -148,6 +148,6 @@ docker_jobs:
 At this point, you should be good, the configuration is done.  
 
 Next steps
----------
+----------
 - Check out the [Console commands](docs/console.md) to get the system up and running.
 - Check out the [Monitoring dashboard](docs/dashboard.md) that you can activate if you wish.
