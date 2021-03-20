@@ -19,3 +19,8 @@ services:
       - '@service_container'
     tags:
       - { name: twig.extension }
+
+  Polkovnik\DockerJobsBundle\Controller\MonitoringController:
+    calls:
+      - [setContainer, ['@service_container']]
+    tags: ['controller.service_arguments']
