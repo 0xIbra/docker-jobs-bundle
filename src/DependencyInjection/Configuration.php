@@ -10,8 +10,8 @@ class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('docker_jobs');
+        $treeBuilder = new TreeBuilder('docker_jobs');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
