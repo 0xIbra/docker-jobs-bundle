@@ -150,7 +150,9 @@ docker_jobs:
 
 ```
 
-At this point, you should be good, the configuration is done.  
+At this point, you should have the bundle imported and working.  
+Next you need to configure the **job orchestrating command** to run non-stop.  
+Check out the steps below.
 
 --------------------------------------------------------------------------------
 
