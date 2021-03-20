@@ -156,5 +156,8 @@ At this point, you should be good, the configuration is done.
 
 Next steps
 ----------
-- Check out the [Console commands](docs/console.md) to get the system up and running.
+- Check out the [Console commands](docs/console.md) to get the system up and running.  
+  This step is vital to get the orchestration of job containers up and running.
+
+
 - Check out the [Monitoring dashboard](docs/dashboard.md) that you can activate if you wish.
