@@ -61,6 +61,8 @@ For this bundle to work, 2 actions you must perform.
 If the **Docker socket permission** step is not completed,  
 the bundle will throw an **exception** as it is not able to connect to **Docker**.
 
+<br><br>
+
 #### Docker socket permission
 
 By default, in most cases, **PHP** does not have permission to access the docker socket
@@ -76,6 +78,7 @@ By doing this, you give everyone read-write-execute permissions to this file to 
 **Hard way**  
 If you are concerned with security, then you can give these permissions only to the **PHP** user.
 
+<br><br>
 
 #### Docker Image
 
