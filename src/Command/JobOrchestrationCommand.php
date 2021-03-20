@@ -80,9 +80,11 @@ class JobOrchestrationCommand extends Command
         $this
             ->setName('polkovnik:jobs:orchestrate')
             ->setDescription('Orchestrates Docker containers and handles them in their different stages.')
-            ->addOption('--queue', null, InputOption::VALUE_OPTIONAL, 'Queue to process.')
-            ->addOption('--update-logs-eager', null, InputOption::VALUE_OPTIONAL, 'When enabled, updates the logs of running jobs every few seconds, otherwise only updates at the end of the job.', true)
-            ->addOption('--concurrency', null, InputOption::VALUE_OPTIONAL, 'Specify how many jobs you want to run concurrently.', 4)
+            ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'Queue to process.')
+            ->addOption('update-logs-eager', null, InputOption::VALUE_OPTIONAL, 'When enabled, updates the logs of running jobs every few seconds, otherwise only updates at the end of the job.', true)
+            ->addOption('concurrency', null, InputOption::VALUE_OPTIONAL, 'Specify how many jobs you want to run concurrently.', 4)
+            ->addOption('interval', null, InputOption::VALUE_OPTIONAL, 'Specify the number of seconds to wait between each iteration.', 1)
+            ->addOption('max-runtime', null, InputOption::VALUE_OPTIONAL, 'Specify the number of seconds the command should run for before exiting.', 900)
         ;
     }
 
@@ -92,7 +94,7 @@ class JobOrchestrationCommand extends Command
         $this->checkRequirements();
 
 //        try {
-            $this->safeExecute($input, $output);
+        $this->safeExecute($input, $output);
 //        } catch (\Exception $exception) {
 //            dump($exception->getMessage());
 //            dd($exception->getTraceAsString());
@@ -101,11 +103,18 @@ class JobOrchestrationCommand extends Command
 
     protected function safeExecute(InputInterface $input, OutputInterface $output)
     {
+        $startTime = new \DateTime();
+
         $firstTime = true;
         $inputOptions = $input->getOptions();
+        $maxRuntime = (int) $inputOptions['max-runtime'];
         $eagerUpdateLogs = $inputOptions['update-logs-eager'];
         if (!empty($inputOptions['concurrency']) && $inputOptions['concurrency'] > 0) {
-            $this->concurrency = $inputOptions['concurrency'];
+            $this->concurrency = (int) $inputOptions['concurrency'];
+        }
+        $interval = 1;
+        if (!empty($inputOptions['interval'])) {
+            $interval = (int) $inputOptions['interval'];
         }
 
         while (true) {
@@ -267,8 +276,14 @@ class JobOrchestrationCommand extends Command
 
             $this->em->flush();
 
-            sleep(1);
+            sleep($interval);
             gc_collect_cycles();
+
+            $now = new \DateTime();
+            if (($now->getTimestamp() - $startTime->getTimestamp()) > $maxRuntime) {
+                $this->log('info', sprintf('Runtime limit of %s exceeded, exiting now.', $maxRuntime));
+                exit(1);
+            }
         }
     }
 
