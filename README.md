@@ -22,7 +22,7 @@ Uses Docker containers to run and handle your jobs.
 Installation
 ------------
 
-   composer require polkovnik/docker-jobs-bundle
+    composer require polkovnik/docker-jobs-bundle
 
 
 Configuration
@@ -37,6 +37,8 @@ The configuration process is a bit lengthy, follow all the steps shown below.
 
 
 --------------------------------------------------------------------------------
+
+<br>
 
 ### Job Entity
 You must create your Job entity and extend of BaseJob class.
@@ -55,13 +57,15 @@ class Job extends BaseJob
 As long as you extend it of `BaseJob`, the bundle will work correctly.
 
 --------------------------------------------------------------------------------
+
+
 ### Docker configuration
 For this bundle to work, 2 actions you must perform.
 
 If the **Docker socket permission** step is not completed,  
 the bundle will throw an **exception** as it is not able to connect to **Docker**.
 
-<br><br>
+<br>
 
 #### Docker socket permission
 
@@ -78,7 +82,7 @@ By doing this, you give everyone read-write-execute permissions to this file to 
 **Hard way**  
 If you are concerned with security, then you can give these permissions only to the **PHP** user.
 
-<br><br>
+<br>
 
 #### Docker Image
 
@@ -86,9 +90,7 @@ If not already done, you must create a Docker image which will be used to execut
 
 This bundle allows use of different images for each job but requires a default image to fallback on when no docker image is specified at launch.
 
-
 --------------------------------------------------------------------------------
-
 
 ### Bundle Configuration
 Once you've got your Job entity and Docker image ready, the last step is to configure the bundle.
@@ -149,6 +151,8 @@ docker_jobs:
 ```
 
 At this point, you should be good, the configuration is done.  
+
+--------------------------------------------------------------------------------
 
 Next steps
 ----------
