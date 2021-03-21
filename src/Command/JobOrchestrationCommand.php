@@ -284,7 +284,7 @@ class JobOrchestrationCommand extends Command
             $now = new \DateTime();
             if (($now->getTimestamp() - $startTime->getTimestamp()) > $maxRuntime) {
                 $this->log('info', sprintf('Runtime limit of %s exceeded, exiting now.', $maxRuntime));
-                exit(1);
+                exit(0);
             }
         }
     }
