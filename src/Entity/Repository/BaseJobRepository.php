@@ -199,8 +199,8 @@ class BaseJobRepository extends EntityRepository
             $now = new \DateTime();
 
             while ($then->getTimestamp() <= $now->getTimestamp()) {
-                $key = $then->format('H');
-                $labels[] = sprintf('%s:00', $key);
+                $key = $then->format('H-d');
+                $labels[] = sprintf('%s:00', $then->format('H'));
                 $values[$key] = 0;
 
                 $then->modify('+1 hour');
@@ -256,7 +256,7 @@ class BaseJobRepository extends EntityRepository
                 }
 
             } else if ($period === 'today') {
-                $hour = $date->format('H');
+                $hour = $date->format('H-d');
                 if (empty($values[$hour])) {
                     $values[$hour] = $count;
                 } else {
