@@ -481,7 +481,7 @@
 
                     let jobId = '{{ job.id | raw }}';
                     updateJobDisplay(jobId)
-                    jobUpdateInterval = setInterval(() => updateJobDisplay(jobId, 10000));
+                    jobUpdateInterval = setInterval(() => updateJobDisplay(jobId), 10000);
                 }
             }
 
