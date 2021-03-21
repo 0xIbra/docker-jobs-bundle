@@ -79,5 +79,6 @@ class CleanOrphanJobsCommand extends Command
             }
         }
 
+        return 0;
     }
 }

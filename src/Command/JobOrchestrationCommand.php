@@ -99,6 +99,8 @@ class JobOrchestrationCommand extends Command
 //            dump($exception->getMessage());
 //            dd($exception->getTraceAsString());
 //        }
+
+        return 0;
     }
 
     protected function safeExecute(InputInterface $input, OutputInterface $output)

@@ -63,5 +63,7 @@ class SubmitJobCommand extends Command
         $this->container->get('event_dispatcher')->dispatch($event, $event->getCode());
 
         $output->writeln(sprintf('<info>Job submitted with ID: %s</info>', $job->getId()));
+
+        return 0;
     }
 }

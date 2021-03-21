@@ -57,8 +57,12 @@ class StopJobCommand extends Command
             $em->flush();
 
             $output->writeln('<info>Job stopped successfully.</info>');
+
+            return 0;
         } else {
             $output->writeln('<comment>Something went wrong, could not stop job.</comment>');
+
+            return 1;
         }
     }
 }
