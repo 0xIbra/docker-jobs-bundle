@@ -4,6 +4,8 @@ namespace Polkovnik\DockerJobsBundle\Command;
 
 use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
+use Polkovnik\Component\DockerClient\Exception\ResourceBusyException;
+use Polkovnik\Component\DockerClient\Exception\ResourceNotFound;
 use Polkovnik\DockerClient;
 use Polkovnik\DockerJobsBundle\Entity\BaseJob;
 use Polkovnik\DockerJobsBundle\Entity\Repository\BaseJobRepository;
@@ -139,7 +141,20 @@ class JobOrchestrationCommand extends Command
             $this->updateContainers();
 
             foreach ($this->runningContainers as $containerId) {
-                $container = $this->docker->getClient()->inspectContainer($containerId);
+                try {
+                    $container = $this->docker->getClient()->inspectContainer($containerId);
+                } catch (ResourceNotFound $e) {
+                    $text = sprintf('cannot inspect container.' . PHP_EOL . 'no such container: %s', $containerId);
+                    $this->log('error', $text);
+
+                    continue;
+                } catch (\Exception $e) {
+                    $text = sprintf('cannot inspect container.'. PHP_EOL . 'reason: %s', $e->getMessage());
+                    $this->log('error', $text);
+
+                    continue;
+                }
+
                 $jobId = (int) $container['Config']['Labels']['job_id'];
 
                 /** @var BaseJob $job */
@@ -194,10 +209,14 @@ class JobOrchestrationCommand extends Command
 
                     /** @var BaseJob $job */
                     $job = $this->jobRepository->find($jobId);
+                } catch (ResourceNotFound $e) {
+                    $text = sprintf('cannot inspect stopped container.' . PHP_EOL . 'no such container: %s'. PHP_EOL . 'maybe it was deleted manually.', $containerId);
+                    $this->log('error', $text);
+
+                    continue;
                 } catch (\Exception $e) {
-                    if ($e->getCode() === 404) {
-                        $this->log('warning', sprintf('container not found: %s ' . PHP_EOL . 'may have been deleted manually by someone.', $containerId));
-                    }
+                    $text = sprintf('cannot inspect stopped container.' . PHP_EOL . 'reason: %s', $e->getMessage());
+                    $this->log('error', $text);
 
                     continue;
                 }
@@ -238,15 +257,38 @@ class JobOrchestrationCommand extends Command
                 }
                 $job->setExitCode($container['State']['ExitCode']);
 
-                $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
-                $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
+                try {
+                    $containerLogs = $this->docker->getClient()->getContainerLogs($containerId);
+                    $errorLogs = $this->docker->getClient()->getContainerLogs($containerId, 'error');
+
+                    $job
+                        ->setOutput((string) $containerLogs)
+                        ->setErrorOutput((string) $errorLogs)
+                    ;
+                } catch (ResourceNotFound $e) {
+                    $text = sprintf('cannot retrieve container logs.' . PHP_EOL . 'no such container: %s' . PHP_EOL . 'Maybe it was deleted manually.', $containerId);
+                    $this->log('error', $text, $job);
+                } catch (\Exception $e) {
+                    $text = sprintf('cannot retrieve container logs.' . PHP_EOL . 'reason: %s', $e->getMessage());
+                    $this->log('error', $text, $job);
+                }
+
                 $job
                     ->setState($state)
-                    ->setOutput((string) $containerLogs)
-                    ->setErrorOutput((string) $errorLogs)
                 ;
 
-                $deletion = $this->docker->getClient()->deleteContainer($containerId);
+                try {
+                    $deletion = $this->docker->getClient()->deleteContainer($containerId);
+                } catch (ResourceNotFound $e) {
+                    $text = sprintf('no such container: %s' . PHP_EOL . 'Maybe it was deleted manually.', $containerId);
+                    $this->log('error', $text, $job);
+                } catch (ResourceBusyException $e) {
+                    $text = sprintf('container is busy: %s' . PHP_EOL . 'Cannot delete it right now.', $containerId);
+                    $this->log('error', $text, $job);
+                } catch (\Exception $e) {
+                    $text = sprintf('Cannot delete container: %s' . PHP_EOL . 'Reason: %s', $containerId, $e->getMessage());
+                    $this->log('error', $text, $job);
+                }
 
                 $exitCode = $container['State']['ExitCode'];
                 if ($exitCode === 0) {
@@ -281,8 +323,8 @@ class JobOrchestrationCommand extends Command
 
             $now = new \DateTime();
             if (($now->getTimestamp() - $startTime->getTimestamp()) > $maxRuntime) {
-                $this->log('info', sprintf('Runtime limit of %s exceeded, exiting now.', $maxRuntime));
-                exit(1);
+                $this->log('info', sprintf('Runtime limit of %s seconds exceeded, exiting now.', $maxRuntime));
+                exit(0);
             }
         }
     }

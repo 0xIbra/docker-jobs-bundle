@@ -44,6 +44,7 @@ class DockerJobsExtension extends Extension
         $container->setParameter('docker_jobs.docker.api_base_uri', $config['docker']['api_base_uri']);
         $container->setParameter('docker_jobs.docker.default_image_id', $config['docker']['default_image_id']);
         $container->setParameter('docker_jobs.docker.container_working_dir', $config['docker']['container_working_dir']);
+        $container->setParameter('docker_jobs.docker.time_difference', $config['docker']['time_difference']);
 
         $this->addAnnotatedClassesToCompile([
             'Polkovnik\\DockerJobsBundle\\Controller\\MonitoringController'

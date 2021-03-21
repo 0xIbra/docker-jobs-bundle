@@ -12,6 +12,9 @@ class DockerService
     const ORCHESTRATION_DOCKER_LABEL = 'polkovnik_docker_jobs';
     const DOCKER_JOB_IDENTIFYING_ENV = 'IS_DOCKER_JOB';
 
+    /** @var ContainerInterface */
+    private $container;
+
     /** @var DockerClient */
     private $docker;
 
@@ -26,6 +29,8 @@ class DockerService
 
     public function __construct(ContainerInterface $container, string $dockerUnixSocket, string $dockerBaseUri = null)
     {
+        $this->container = $container;
+
         $options = [
             'unix_socket' => $dockerUnixSocket,
         ];
@@ -163,8 +168,9 @@ class DockerService
      */
     public function getDateTime($dateString)
     {
+        $diff = $this->container->getParameter('docker_jobs.docker.time_difference');
         $date = \DateTime::createFromFormat('Y-m-d\\TH:i:s.u+', $dateString);
-        $date->modify('+1 hour');
+        $date->modify($diff);
 
         return $date;
     }

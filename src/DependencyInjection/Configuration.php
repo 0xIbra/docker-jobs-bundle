@@ -26,6 +26,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('api_base_uri')->defaultNull()->end()
                         ->scalarNode('default_image_id')->isRequired()->cannotBeEmpty()->end()
                         ->scalarNode('container_working_dir')->isRequired()->cannotBeEmpty()->end()
+                        ->scalarNode('time_difference')->defaultValue('+1 hour')->end()
                     ->end()
                 ->end()
                 ->arrayNode('runtime')
