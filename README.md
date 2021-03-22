@@ -143,6 +143,13 @@ docker_jobs:
    # When starting a container for your job, the user will cd into this directory.
    container_working_dir: '/opt/symfony-project'        # Required
 
+   # This parameter is used to convert docker container dates to my timezone.
+   # Docker by default uses UTC+00:00 time, me who's residing in France, i need to add 1 hour to it for it to be correct (UTC+01:00).
+   # You can use this parameter to add or remove hours to adapt it to your timezone.
+   time_difference: '+1 hour' # Optional (default: +1 hour)
+   # time_difference: '+3 hours'
+   # time_difference: '-2 hours'
+
  runtime: # Optional
    # This is a default concurrency limit value
    # This value can be overridden in the job orchestrating command.
