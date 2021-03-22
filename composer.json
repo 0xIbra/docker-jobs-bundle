@@ -18,8 +18,8 @@
     },
     "require": {
         "polkovnik-z/php-docker-client": "1.41.*",
-        "symfony/asset": ">=5.0",
-        "symfony/translation": ">=5.0",
-        "symfony/form": ">=5.0"
+        "symfony/asset": "~5.0",
+        "symfony/translation": "~5.0",
+        "symfony/form": "~5.0"
     }
 }
