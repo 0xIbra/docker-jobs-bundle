@@ -1,7 +1,7 @@
 {
-    "name": "polkovnik/docker-jobs-bundle",
-    "version": "dev-master",
-    "description": "Execute jobs in docker containers.",
+    "name": "polkovnik-z/docker-jobs-bundle",
+    "version": "3.0.0",
+    "description": "Symfony bundle that offers a batch processing system with Docker.",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
