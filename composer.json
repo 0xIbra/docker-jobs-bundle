@@ -1,6 +1,6 @@
 {
     "name": "polkovnik/docker-jobs-bundle",
-    "version": "dev-master",
+    "version": "5.0.0",
     "description": "Execute jobs in docker containers.",
     "type": "symfony-bundle",
     "license": "MIT",
