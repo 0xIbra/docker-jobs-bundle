@@ -17,7 +17,7 @@
         }
     },
     "require": {
-        "polkovnik/php-docker-client": "1.41.*",
+        "polkovnik-z/php-docker-client": "1.41.*",
         "symfony/asset": ">=2.8",
         "symfony/translation": ">=2.8",
         "symfony/form": ">=2.8"
