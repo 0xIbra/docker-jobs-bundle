@@ -1,5 +1,5 @@
 {
-    "name": "polkovnik/docker-jobs-bundle",
+    "name": "polkovnik-z/docker-jobs-bundle",
     "version": "5.0.0",
     "description": "Execute jobs in docker containers.",
     "type": "symfony-bundle",
