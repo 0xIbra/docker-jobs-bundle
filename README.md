@@ -70,7 +70,7 @@ the bundle will throw an **exception** as it is not able to connect to **Docker*
 #### Docker socket permission
 
 By default, in most cases, **PHP** does not have permission to access the docker socket
-which be default on linux is located at `/var/run/docker.sock`.
+which by default on linux is located at `/var/run/docker.sock`.
 
 For **PHP** to be able to bind to this socket and perform http requests,
 you must give the necessary permissions.
