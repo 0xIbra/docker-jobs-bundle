@@ -178,3 +178,10 @@ Next steps
 
 
 - Check out the [Monitoring dashboard](docs/dashboard.md) that you can activate if you wish.
+
+--------------------------------------------------------------------------------
+
+License
+-------
+
+ - [Review](LICENSE)
