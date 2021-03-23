@@ -22,7 +22,7 @@ Uses Docker containers to run and handle your jobs.
 Installation
 ------------
 
-    composer require polkovnik/docker-jobs-bundle
+    composer require polkovnik-z/docker-jobs-bundle
 
 
 Configuration
