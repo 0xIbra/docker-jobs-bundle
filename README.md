@@ -4,8 +4,9 @@ Docker Jobs Bundle
 
 Uses Docker containers to run and handle your jobs.
 
+* [Need to know](#need-to-know)
 * [Installation](#installation)
-* [Configuratin](#configuration)
+* [Configuration](#configuration)
  * [Job Entity](#job-entity)
  * [Docker Configuration](#docker-configuration)
    * [Docker socket permission](#docker-socket-permission)
@@ -18,6 +19,13 @@ Uses Docker containers to run and handle your jobs.
     * [Stop job command](docs/console.md#stop-job-command)
     * [Orphan job cleaning command](docs/console.md#clean-orphan-jobs-command)
   * [Job Monitoring Dashboard](docs/dashboard.md)
+
+
+Need to know
+-------------------
+All containers started by this bundle, are by default on the host's network.  
+So, if you need to connect to a local database, you can with the usual `localhost|127.0.0.1`.
+
 
 Installation
 ------------
