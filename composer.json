@@ -1,7 +1,8 @@
 {
     "name": "polkovnik-z/docker-jobs-bundle",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "Symfony bundle that offers a batch processing system with Docker.",
+    "homepage": "https://github.com/polkovnik-z/docker-jobs-bundle",
     "type": "symfony-bundle",
     "license": "MIT",
     "authors": [
