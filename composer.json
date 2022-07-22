@@ -1,6 +1,6 @@
 {
     "name": "ibra-akv/docker-jobs-bundle",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "description": "Symfony bundle that offers a batch processing system with Docker.",
     "homepage": "https://github.com/ibra-akv/docker-jobs-bundle",
     "type": "symfony-bundle",
@@ -18,7 +18,7 @@
         }
     },
     "require": {
-        "ibra-akv/php-docker-client": "1.41.*",
+        "ibra-akv/php-docker-client": "*",
         "symfony/asset": ">=2.8",
         "symfony/translation": ">=2.8",
         "symfony/form": ">=2.8"

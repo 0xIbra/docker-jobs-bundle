@@ -30,6 +30,16 @@ So, if you need to connect to a local database, you can with the usual `localhos
 Installation
 ------------
 
+##### 1. Before installing the bundle, you need the install the php driver for Docker API
+You need to install the same version of the driver as the version of the Docker engine API version.  
+To find out the version of the Docker API, do `docker version | grep 'API version'`.  
+In my case, the version is `1.41`
+
+    composer require ibra-akv/php-docker-client:1.41.*
+
+##### 2. Install the bundle
+Now you can install the bundle:
+
     composer require ibra-akv/docker-jobs-bundle
 
 
