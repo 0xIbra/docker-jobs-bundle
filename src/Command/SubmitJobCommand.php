@@ -1,9 +1,9 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Command;
+namespace IterativeCode\DockerJobsBundle\Command;
 
-use Polkovnik\DockerJobsBundle\Event\JobSubmittedEvent;
-use Polkovnik\DockerJobsBundle\Manager\JobManager;
+use IterativeCode\DockerJobsBundle\Event\JobSubmittedEvent;
+use IterativeCode\DockerJobsBundle\Manager\JobManager;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +21,7 @@ class SubmitJobCommand extends Command
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
+        $this->jobManager = $container->get('iterative_code.docker_jobs.manager.job');
 
         parent::__construct();
     }
@@ -29,7 +29,7 @@ class SubmitJobCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:jobs:submit')
+            ->setName('iterative_code:jobs:submit')
             ->setDescription('Creates a new job and submits it to a queue for processing.')
             ->addOption('--command', null, InputOption::VALUE_REQUIRED, 'command to execute.')
             ->addOption('--queue', null, InputOption::VALUE_OPTIONAL, 'queue where to submit the job.', 'default')

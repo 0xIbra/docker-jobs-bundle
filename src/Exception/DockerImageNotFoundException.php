@@ -1,6 +1,6 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Exception;
+namespace IterativeCode\DockerJobsBundle\Exception;
 
 class DockerImageNotFoundException extends \Exception
 {

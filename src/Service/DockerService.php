@@ -1,15 +1,15 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Service;
+namespace IterativeCode\DockerJobsBundle\Service;
 
-use Polkovnik\Component\DockerClient\DockerClient;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Manager\JobManager;
+use IterativeCode\Component\DockerClient\DockerClient;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Manager\JobManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class DockerService
 {
-    const ORCHESTRATION_DOCKER_LABEL = 'polkovnik_docker_jobs';
+    const ORCHESTRATION_DOCKER_LABEL = 'iterative_code_docker_jobs';
     const DOCKER_JOB_IDENTIFYING_ENV = 'IS_DOCKER_JOB';
 
     /** @var ContainerInterface */
@@ -48,7 +48,7 @@ class DockerService
 
         $this->dockerImage = $container->getParameter('docker_jobs.docker.default_image_id');
         $this->dockerWorkingDir = $container->getParameter('docker_jobs.docker.container_working_dir');
-        $this->jobManager = $container->get('polkovnik.docker_jobs.manager.job');
+        $this->jobManager = $container->get('iterative_code.docker_jobs.manager.job');
     }
 
     public function getClient()

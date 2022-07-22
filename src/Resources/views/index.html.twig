@@ -7,13 +7,13 @@
         <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4" style="justify-content: right">
             <div>
-                <h1 class="h3 mb-0 text-gray-800">{{ 'polkovnik.docker_jobs.sidebar.dashboard' | trans }}</h1>
+                <h1 class="h3 mb-0 text-gray-800">{{ 'iterative_code.docker_jobs.sidebar.dashboard' | trans }}</h1>
             </div>
 
             <div>
                 <div class="d-none d-sm-inline-block mr-1">
                     <select class="form-control" id="queueSelector">
-                        <option value="all">{{ 'polkovnik.docker_jobs.queue.all' | trans }}</option>
+                        <option value="all">{{ 'iterative_code.docker_jobs.queue.all' | trans }}</option>
                         {% for queue in queues %}
                             <option value="{{ queue }}" {% if selectedQueue == queue %}selected{% endif %}>{{ queue | trans | capitalize }}</option>
                         {% endfor %}
@@ -32,7 +32,7 @@
             </div>
 
 {#            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i#}
-{#                        class="fas fa-download fa-sm text-white-50"></i>{{ 'polkovnik.docker_jobs.generate_report' | trans }}</a>#}
+{#                        class="fas fa-download fa-sm text-white-50"></i>{{ 'iterative_code.docker_jobs.generate_report' | trans }}</a>#}
         </div>
 
         <!-- Content Row -->
@@ -42,12 +42,12 @@
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-warning shadow h-100 py-2">
                     {% set filters = { state: 'pending', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
-                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                    <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                        {{ 'polkovnik.docker_jobs.jobs.pending' | trans }}</div>
+                                        {{ 'iterative_code.docker_jobs.jobs.pending' | trans }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.pending }}</div>
                                 </div>
                                 <div class="col-auto">
@@ -63,12 +63,12 @@
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-primary shadow h-100 py-2">
                     {% set filters = { state: 'running', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
-                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                    <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                        {{ 'polkovnik.docker_jobs.jobs.running' | trans }}</div>
+                                        {{ 'iterative_code.docker_jobs.jobs.running' | trans }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.running }}</div>
                                 </div>
                                 <div class="col-auto">
@@ -85,12 +85,12 @@
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-success shadow h-100 py-2">
                     {% set filters = { state: 'finished', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
-                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                    <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                        {{ 'polkovnik.docker_jobs.jobs.finished' | trans }}</div>
+                                        {{ 'iterative_code.docker_jobs.jobs.finished' | trans }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.finished }}</div>
                                 </div>
                                 <div class="col-auto">
@@ -106,12 +106,12 @@
             <div class="col-xl-3 col-md-6 mb-4">
                 <div class="card border-left-danger shadow h-100 py-2">
                     {% set filters = { state: 'failed', queue: selectedQueue, period: selectedPeriod } | json_encode | raw %}
-                    <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
+                    <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', {filters: filters}) }}" class="text-decoration-none">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center">
                                 <div class="col mr-2">
                                     <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                        {{ 'polkovnik.docker_jobs.jobs.failed' | trans }}</div>
+                                        {{ 'iterative_code.docker_jobs.jobs.failed' | trans }}</div>
                                     <div class="h5 mb-0 font-weight-bold text-gray-800">{{ statistics.count.failed }}</div>
                                 </div>
                                 <div class="col-auto">
@@ -135,7 +135,7 @@
                     <!-- Card Header - Dropdown -->
                     <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.jobs.per_period' | trans }}</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.jobs.per_period' | trans }}</h6>
                     </div>
                     <!-- Card Body -->
                     <div class="card-body">
@@ -152,7 +152,7 @@
                     <!-- Card Header - Dropdown -->
                     <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">Jobs par statut</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.jobs.per_status' | trans }}</h6>
                         <div class="dropdown no-arrow">
                             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -175,16 +175,16 @@
                         </div>
                         <div class="mt-4 text-center small">
                             <span class="mr-2">
-                                <i class="fas fa-circle text-warning"></i> {{ 'polkovnik.docker_jobs.state.pending' | trans }}
+                                <i class="fas fa-circle text-warning"></i> {{ 'iterative_code.docker_jobs.state.pending' | trans }}
                             </span>
                             <span class="mr-2">
-                                <i class="fas fa-circle text-primary"></i> {{ 'polkovnik.docker_jobs.state.running' | trans }}
+                                <i class="fas fa-circle text-primary"></i> {{ 'iterative_code.docker_jobs.state.running' | trans }}
                             </span>
                             <span class="mr-2">
-                                <i class="fas fa-circle text-success"></i> {{ 'polkovnik.docker_jobs.state.finished' | trans }}
+                                <i class="fas fa-circle text-success"></i> {{ 'iterative_code.docker_jobs.state.finished' | trans }}
                             </span>
                             <span class="mr-2">
-                                <i class="fas fa-circle text-danger"></i> {{ 'polkovnik.docker_jobs.state.failed' | trans }}
+                                <i class="fas fa-circle text-danger"></i> {{ 'iterative_code.docker_jobs.state.failed' | trans }}
                             </span>
                         </div>
                     </div>
@@ -201,7 +201,7 @@
                 <!-- Jobs Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.jobs.latest_running' | trans }}</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.jobs.latest_running' | trans }}</h6>
                     </div>
                     <div class="card-body">
                         {% if latestJobs.running is not empty %}
@@ -217,7 +217,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.running %}
-                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
+                                        <tr class="clickable-row" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
@@ -238,7 +238,7 @@
                 <!-- Jobs Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-success">{{ 'polkovnik.docker_jobs.jobs.latest_finished' | trans }}</h6>
+                        <h6 class="m-0 font-weight-bold text-success">{{ 'iterative_code.docker_jobs.jobs.latest_finished' | trans }}</h6>
                     </div>
                     <div class="card-body">
                         {% if latestJobs.finished is not empty %}
@@ -254,7 +254,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.finished %}
-                                        <tr onclick="clickHandler(this)" class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">
+                                        <tr onclick="clickHandler(this)" class="clickable-row" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
@@ -274,7 +274,7 @@
                 <!-- Jobs Example -->
                 <div class="card shadow mb-4 ml-0 mr-0">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-danger">{{ 'polkovnik.docker_jobs.jobs.latest_failed' | trans }}</h6>
+                        <h6 class="m-0 font-weight-bold text-danger">{{ 'iterative_code.docker_jobs.jobs.latest_failed' | trans }}</h6>
                     </div>
                     <div class="card-body">
                         {% if latestJobs.failed is not empty %}
@@ -290,7 +290,7 @@
                                     </thead>
                                     <tbody>
                                     {% for job in latestJobs.failed %}
-                                        <tr class="clickable-row" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
+                                        <tr class="clickable-row" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}" onclick="clickHandler(this)">
                                             <td><strong>{{ job.id }}</strong></td>
                                             <td>{{ job.command }}</td>
                                             <td>{{ job.startedAt | date('H:i:s d/m/Y') }}</td>
@@ -354,7 +354,7 @@
                 data: {
                     labels: {{ statistics.period.labels | json_encode | raw }},
                     datasets: [{
-                        label: "{{ 'polkovnik.docker_jobs.jobs' | trans }}",
+                        label: "{{ 'iterative_code.docker_jobs.jobs' | trans }}",
                         lineTension: 0.3,
                         backgroundColor: "rgba(78, 115, 223, 0.05)",
                         borderColor: "rgba(78, 115, 223, 1)",
