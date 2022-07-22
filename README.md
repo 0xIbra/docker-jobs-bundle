@@ -30,7 +30,7 @@ So, if you need to connect to a local database, you can with the usual `localhos
 Installation
 ------------
 
-    composer require polkovnik-z/docker-jobs-bundle
+    composer require ibra-akv/docker-jobs-bundle
 
 
 Configuration
@@ -55,7 +55,7 @@ You must create your Job entity and extend of BaseJob class.
 
 namespace App\Entity;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 
 class Job extends BaseJob
 {
@@ -112,7 +112,7 @@ If not already done, include the bundle to your project:
 return [
  Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
  ...
- Polkovnik\DockerJobsBundle\DockerJobsBundle::class => ['all' => true],
+ IterativeCode\DockerJobsBundle\DockerJobsBundle::class => ['all' => true],
 ];
 
 # Symfony 3
@@ -122,7 +122,7 @@ $bundles = array(
  new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
  new Symfony\Bundle\SecurityBundle\SecurityBundle(),
  ...
- new Polkovnik\DockerJobsBundle\DockerJobsBundle(),
+ new IterativeCode\DockerJobsBundle\DockerJobsBundle(),
 )
 
 ```

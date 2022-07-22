@@ -1,11 +1,11 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Entity;
+namespace IterativeCode\DockerJobsBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\MappedSuperclass(repositoryClass="Polkovnik\DockerJobsBundle\Entity\Repository\BaseJobRepository")
+ * @ORM\MappedSuperclass(repositoryClass="IterativeCode\DockerJobsBundle\Entity\Repository\BaseJobRepository")
  */
 class BaseJob
 {

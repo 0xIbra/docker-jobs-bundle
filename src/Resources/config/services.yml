@@ -1,20 +1,20 @@
 services:
-  polkovnik.docker_jobs.service.docker:
+  iterative_code.docker_jobs.service.docker:
     public: true
-    class: Polkovnik\DockerJobsBundle\Service\DockerService
+    class: IterativeCode\DockerJobsBundle\Service\DockerService
     arguments:
       - '@service_container'
       - '%docker_jobs.docker.unix_socket_path%'
       - '%docker_jobs.docker.api_base_uri%'
 
-  polkovnik.docker_jobs.manager.job:
+  iterative_code.docker_jobs.manager.job:
     public: true
-    class: Polkovnik\DockerJobsBundle\Manager\JobManager
+    class: IterativeCode\DockerJobsBundle\Manager\JobManager
     arguments:
       - '@service_container'
 
-  polkovnik.docker_jobs.twig.extension.job:
-    class: Polkovnik\DockerJobsBundle\Twig\JobExtension
+  iterative_code.docker_jobs.twig.extension.job:
+    class: IterativeCode\DockerJobsBundle\Twig\JobExtension
     arguments:
       - '@service_container'
     tags:

@@ -1,10 +1,10 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Twig;
+namespace IterativeCode\DockerJobsBundle\Twig;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Manager\JobManager;
-use Polkovnik\DockerJobsBundle\Service\DockerService;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Manager\JobManager;
+use IterativeCode\DockerJobsBundle\Service\DockerService;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -23,8 +23,8 @@ class JobExtension extends AbstractExtension
     public function __construct(ContainerInterface $container)
     {
         $this->container    = $container;
-        $this->docker       = $container->get('polkovnik.docker_jobs.service.docker');
-        $this->jobManager   = $container->get('polkovnik.docker_jobs.manager.job');
+        $this->docker       = $container->get('iterative_code.docker_jobs.service.docker');
+        $this->jobManager   = $container->get('iterative_code.docker_jobs.manager.job');
     }
 
     public function getFunctions()
