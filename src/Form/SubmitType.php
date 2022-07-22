@@ -1,6 +1,6 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Form;
+namespace IterativeCode\DockerJobsBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -19,16 +19,16 @@ class SubmitType extends AbstractType
 
         $builder
             ->add('command', TextareaType::class, [
-                'label' => 'polkovnik.docker_jobs.fields.command.label',
+                'label' => 'iterative_code.docker_jobs.fields.command.label',
                 'translation_domain' => 'DockerJobsBundle',
             ])
             ->add('queue', TextType::class, [
-                'label' => 'polkovnik.docker_jobs.queue',
+                'label' => 'iterative_code.docker_jobs.queue',
                 'translation_domain' => 'DockerJobsBundle',
             ])
             ->add('dockerImageId', TextType::class, [
                 'data' => $options['dockerImageId'],
-                'label' => 'polkovnik.docker_jobs.image.label',
+                'label' => 'iterative_code.docker_jobs.image.label',
                 'translation_domain' => 'DockerJobsBundle',
             ])
         ;

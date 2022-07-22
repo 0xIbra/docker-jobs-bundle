@@ -1,11 +1,11 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Command;
+namespace IterativeCode\DockerJobsBundle\Command;
 
 use Doctrine\ORM\EntityNotFoundException;
-use Polkovnik\Component\DockerClient\Exception\ResourceNotFound;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Service\DockerService;
+use IterativeCode\Component\DockerClient\Exception\ResourceNotFound;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Service\DockerService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,7 +31,7 @@ class CleanOrphanJobsCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:jobs:clean')
+            ->setName('iterative_code:jobs:clean')
             ->setDescription('Removes orphan jobs from the running state.')
             ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'Queue from which will be removed orphan jobs.')
             ->addOption('dry-run', null, InputOption::VALUE_OPTIONAL, 'Run without applying changes.', false)

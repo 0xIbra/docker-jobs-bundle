@@ -17,19 +17,19 @@
                         </div>
 
                         <div id="autorefresh-btn" class="clickable d-none d-sm-inline-block mr-2" onclick="toggleAutorefresh()">
-                            <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}</a>
+                            <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'iterative_code.docker_jobs.auto_refresh' | trans }}</a>
                         </div>
 
                         <div id="stop-job-container" onclick="stopJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                 <i class="fas fa-stop-circle fa-sm text-white-50"></i>
-                                {{ 'polkovnik.docker_jobs.actions.stop.label' | trans }}</a>
+                                {{ 'iterative_code.docker_jobs.actions.stop.label' | trans }}</a>
                         </div>
                     {% elseif job.state == 'new' or job.state == 'pending' %}
                         <div id="cancel-job-container" onclick="cancelJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
                             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                 <i class="fas fa-trash fa-sm text-white-50"></i>
-                                {{ 'polkovnik.docker_jobs.actions.cancel.label' | trans }}</a>
+                                {{ 'iterative_code.docker_jobs.actions.cancel.label' | trans }}</a>
                         </div>
                     {% endif %}
                 </div>
@@ -41,7 +41,7 @@
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.execution.label' | trans }}</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.execution.label' | trans }}</h6>
                     </div>
                     <!-- Card Body -->
                     <div class="card-body" style="padding: 1.7rem;">
@@ -50,8 +50,8 @@
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div id="state-key-value" class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.state' | trans }}</span>
-                                    {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
+                                    <span class="key">{{ 'iterative_code.docker_jobs.state' | trans }}</span>
+                                    {% set key = 'iterative_code.docker_jobs.state.' ~ job.state %}
 
                                     {% if job.state == 'new' %}
                                         <span class="value">
@@ -93,21 +93,21 @@
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.queue' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.queue' | trans }}</span>
                                     <span class="value">{{ job.queue }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.execution.worker' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.execution.worker' | trans }}</span>
                                     <span class="value">{{ job.workerName }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.fields.command.label' | trans }}</span>
                                     <span class="value code">{{ job.command }}</span>
                                 </div>
                             </div>
@@ -119,21 +119,21 @@
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.createdAt.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.fields.createdAt.label' | trans }}</span>
                                     <span class="value">{{ job.createdAt | date('H:i:s d/m/Y') }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.startedAt.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.fields.startedAt.label' | trans }}</span>
                                     <span class="value">{{ job.startedAt | date('H:i:s d/m/Y') }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.stoppedAt.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.fields.stoppedAt.label' | trans }}</span>
                                     {% if job.stoppedAt is not null %}
                                         <span class="value">{{ job.stoppedAt | date('H:i:s d/m/Y') }}</span>
                                     {% endif %}
@@ -142,7 +142,7 @@
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.fields.runtime.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.fields.runtime.label' | trans }}</span>
                                     <span id="job-runtime" class="value code">{{ get_job_runtime(job) }}</span>
                                 </div>
                             </div>
@@ -154,21 +154,21 @@
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.image.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.image.label' | trans }}</span>
                                     <span class="value">{{ dockerImageId }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.container_id.label' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.container_id.label' | trans }}</span>
                                     <span class="value" style="font-size: 14px;">{{ job.dockerContainerId }}</span>
                                 </div>
                             </div>
 
                             <div class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.exit_code' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.exit_code' | trans }}</span>
                                     {% set class = 'text-success' %}
                                     {% if job.exitCode is not null and job.exitCode > 0 %}
                                         {% set class = 'text-danger' %}
@@ -179,7 +179,7 @@
 
                             <div class="col-sm-12 col-md-4 col-lg-3">
                                 <div class="key-value">
-                                    <span class="key">{{ 'polkovnik.docker_jobs.error_message' | trans }}</span>
+                                    <span class="key">{{ 'iterative_code.docker_jobs.error_message' | trans }}</span>
                                     <span class="value text-danger">{{ job.errorMessage }}</span>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                     <div class="card shadow mb-4">
                         <!-- Card Header - Dropdown -->
                         <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.resource-utilization' | trans }}</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.resource-utilization' | trans }}</h6>
                         </div>
                         <!-- Card Body -->
                         <div class="card-body" style="padding: 1.7rem;">
@@ -208,28 +208,28 @@
 
                                 <div class="col-sm-6 col-md-4 col-lg-3">
                                     <div class="key-value">
-                                        <span class="key">{{ 'polkovnik.docker_jobs.cpu' | trans }}</span>
+                                        <span class="key">{{ 'iterative_code.docker_jobs.cpu' | trans }}</span>
                                         <span id="cpu-display" class="value"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6 col-md-4 col-lg-3">
                                     <div class="key-value">
-                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_usage' | trans }}</span>
+                                        <span class="key">{{ 'iterative_code.docker_jobs.memory_usage' | trans }}</span>
                                         <span id="memory-usage" class="value"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6 col-md-4 col-lg-3">
                                     <div class="key-value">
-                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_used' | trans }}</span>
+                                        <span class="key">{{ 'iterative_code.docker_jobs.memory_used' | trans }}</span>
                                         <span id="memory-used" class="value"></span>
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6 col-md-4 col-lg-3">
                                     <div class="key-value">
-                                        <span class="key">{{ 'polkovnik.docker_jobs.memory_limit' | trans }}</span>
+                                        <span class="key">{{ 'iterative_code.docker_jobs.memory_limit' | trans }}</span>
                                         <span id="memory-available" class="value code"></span>
                                     </div>
                                 </div>
@@ -248,7 +248,7 @@
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
 {#                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">#}
-{#                        <h6 class="m-0 font-weight-bold text-primary">{{ 'polkovnik.docker_jobs.execution.label' | trans }}</h6>#}
+{#                        <h6 class="m-0 font-weight-bold text-primary">{{ 'iterative_code.docker_jobs.execution.label' | trans }}</h6>#}
 {#                    </div>#}
                     <!-- Card Body -->
                     <div class="card-body" style="padding: 0.7rem;">
@@ -256,12 +256,12 @@
                         <ul class="nav nav-tabs modernize" id="myTab" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
-                                    {{ 'polkovnik.docker_jobs.logs' | trans }}
+                                    {{ 'iterative_code.docker_jobs.logs' | trans }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">
-                                    {{ 'polkovnik.docker_jobs.environment-variables' | trans }}
+                                    {{ 'iterative_code.docker_jobs.environment-variables' | trans }}
                                 </a>
                             </li>
                         </ul>
@@ -290,7 +290,7 @@
                                             </thead>
                                             <tbody>
                                             {% for var in job.environmentVariables %}
-                                                <tr class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">
+                                                <tr class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">
                                                     <td>{{ var['name'] }}</td>
                                                     <td>{{ var['value'] }}</td>
                                                 </tr>
@@ -331,7 +331,7 @@
 {#        {% if job.state == 'running' %}#}
 
             function stopJob(id) {
-                let route = '{{ path('polkovnik.docker_jobs.jobs.stop', {id: job.id}) | raw }}';
+                let route = '{{ path('iterative_code.docker_jobs.jobs.stop', {id: job.id}) | raw }}';
                 showLoader();
                 $.ajax({
                     method: 'POST',
@@ -360,13 +360,13 @@
 
 
             let states = {
-                new: '{{ 'polkovnik.docker_jobs.state.new' | trans }}',
-                pending: '{{ 'polkovnik.docker_jobs.state.pending' | trans }}',
-                canceled: '{{ 'polkovnik.docker_jobs.state.canceled' | trans }}',
-                running: '{{ 'polkovnik.docker_jobs.state.running' | trans }}',
-                finished: '{{ 'polkovnik.docker_jobs.state.finished' | trans }}',
-                failed: '{{ 'polkovnik.docker_jobs.state.failed' | trans }}',
-                stopped: '{{ 'polkovnik.docker_jobs.state.stopped' | trans }}'
+                new: '{{ 'iterative_code.docker_jobs.state.new' | trans }}',
+                pending: '{{ 'iterative_code.docker_jobs.state.pending' | trans }}',
+                canceled: '{{ 'iterative_code.docker_jobs.state.canceled' | trans }}',
+                running: '{{ 'iterative_code.docker_jobs.state.running' | trans }}',
+                finished: '{{ 'iterative_code.docker_jobs.state.finished' | trans }}',
+                failed: '{{ 'iterative_code.docker_jobs.state.failed' | trans }}',
+                stopped: '{{ 'iterative_code.docker_jobs.state.stopped' | trans }}'
             };
 
             function updateStateDisplay(state) {
@@ -415,7 +415,7 @@
             }
 
             function updateJobDisplay (id) {
-                let route = '{{ path('polkovnik.docker_jobs.jobs.details.json', {id: job.id, logs: true}) | raw }}';
+                let route = '{{ path('iterative_code.docker_jobs.jobs.details.json', {id: job.id, logs: true}) | raw }}';
                 // let logConsole = $('#logging-console').text();
                 // if (logConsole != null && logConsole.length > 0) {
                 //     route += '?logs_pointer=' + logConsole.length;
@@ -471,13 +471,13 @@
                 if (autorefreshBtn.hasClass('active')) {
                     autorefreshBtn.removeClass('active');
                     reloadBtn.removeClass('spinner');
-                    autorefreshText.text('{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}')
+                    autorefreshText.text('{{ 'iterative_code.docker_jobs.auto_refresh' | trans }}')
 
                     clearInterval(jobUpdateInterval);
                 } else {
                     autorefreshBtn.addClass('active');
                     reloadBtn.addClass('spinner');
-                    autorefreshText.text('{{ 'polkovnik.docker_jobs.stop_auto_refresh' | trans }}')
+                    autorefreshText.text('{{ 'iterative_code.docker_jobs.stop_auto_refresh' | trans }}')
 
                     let jobId = '{{ job.id | raw }}';
                     updateJobDisplay(jobId)
@@ -495,7 +495,7 @@
                 let jobId = '{{ job.id | raw }}';
                 $.ajax({
                     method: 'GET',
-                    url: '{{ path('polkovnik.docker_jobs.jobs.details.json', {id: job.id }) | raw }}',
+                    url: '{{ path('iterative_code.docker_jobs.jobs.details.json', {id: job.id }) | raw }}',
                     success: (res) => {
                         if (res.status === 200) {
                             if (res.data.state === 'running') {
@@ -505,13 +505,13 @@
                                             </div>
 
                                             <div id="autorefresh-btn" class="clickable d-none d-sm-inline-block mr-2" onclick="toggleAutorefresh()">
-                                                <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'polkovnik.docker_jobs.auto_refresh' | trans }}</a>
+                                                <a id="autorefresh-text" href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">{{ 'iterative_code.docker_jobs.auto_refresh' | trans }}</a>
                                             </div>
 
                                             <div id="stop-job-container" onclick="stopJob('{{ job.id | raw }}')" class="clickable d-none d-sm-inline-block">
                                                 <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm">
                                                     <i class="fas fa-stop-circle fa-sm text-white-50"></i>
-                                                    {{ 'polkovnik.docker_jobs.actions.stop.label' | trans }}</a>
+                                                    {{ 'iterative_code.docker_jobs.actions.stop.label' | trans }}</a>
                                             </div>`;
 
                                 $('#running-job-actions-container').html(html);
@@ -532,7 +532,7 @@
             function cancelJob(id) {
                 $.ajax({
                     method: 'DELETE',
-                    url: "{{ path('polkovnik.docker_jobs.jobs.cancel', {id: job.id}) }}",
+                    url: "{{ path('iterative_code.docker_jobs.jobs.cancel', {id: job.id}) }}",
                     success: (res) => {
                         if (res.status === 200) {
                             $('#cancel-job-container').remove();
