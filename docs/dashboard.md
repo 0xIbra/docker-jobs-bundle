@@ -29,7 +29,7 @@ All you have to do is to import the bundle annotation routes:
 # routing.yml - Symfony 2 - 3
 
 
-polkovnik_docker_jobs:
+iterative_code_docker_jobs:
   resource: '@DockerJobsBundle/Controller'
   type: annotation
 # prefix: /admin ?

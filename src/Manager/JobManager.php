@@ -1,9 +1,9 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Manager;
+namespace IterativeCode\DockerJobsBundle\Manager;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class JobManager

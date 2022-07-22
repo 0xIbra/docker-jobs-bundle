@@ -1,23 +1,23 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Entity\Repository;
+namespace IterativeCode\DockerJobsBundle\Entity\Repository;
 
 use App\Entity\Job;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use iterative_code\DockerJobsBundle\Entity\BaseJob;
 
 class BaseJobRepository extends EntityRepository
 {
     public static function getPeriods()
     {
         return [
-            'all'           => 'polkovnik.docker_jobs.all_period',
-            'last-hour'     => 'polkovnik.docker_jobs.last_hour',
-            'today'         => 'polkovnik.docker_jobs.today',
-            'last-7-days'   => 'polkovnik.docker_jobs.last_7_days',
-            'currentMonth'  => 'polkovnik.docker_jobs.current_month',
-            'lastMonth'     => 'polkovnik.docker_jobs.last_month'
+            'all'           => 'iterative_code.docker_jobs.all_period',
+            'last-hour'     => 'iterative_code.docker_jobs.last_hour',
+            'today'         => 'iterative_code.docker_jobs.today',
+            'last-7-days'   => 'iterative_code.docker_jobs.last_7_days',
+            'currentMonth'  => 'iterative_code.docker_jobs.current_month',
+            'lastMonth'     => 'iterative_code.docker_jobs.last_month'
         ];
     }
 

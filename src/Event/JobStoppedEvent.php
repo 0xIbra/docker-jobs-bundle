@@ -1,13 +1,13 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Event;
+namespace IterativeCode\DockerJobsBundle\Event;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use Symfony\Component\EventDispatcher\Event;
 
 class JobStoppedEvent extends Event
 {
-    public const CODE = 'polkovnik.docker_jobs.events.job.stopped';
+    public const CODE = 'iterative_code.docker_jobs.events.job.stopped';
 
     /** @var BaseJob */
     protected $job;
