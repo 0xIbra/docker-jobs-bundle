@@ -1,92 +1,93 @@
 # Common
-polkovnik.docker_jobs.sidebar.dashboard: Dashboard
-polkovnik.docker_jobs.sidebar.submit_job: Submit new job
-polkovnik.docker_jobs.generate_report: Generate a report
-polkovnik.docker_jobs.jobs_found: Jobs found
+iterative_code.docker_jobs.sidebar.dashboard: Dashboard
+iterative_code.docker_jobs.sidebar.submit_job: Submit new job
+iterative_code.docker_jobs.generate_report: Generate a report
+iterative_code.docker_jobs.jobs_found: Jobs found
 
 # Periods
-polkovnik.docker_jobs.all_period: All time
-polkovnik.docker_jobs.last_hour: Last hour
-polkovnik.docker_jobs.today: Last 24 hours
-polkovnik.docker_jobs.last_7_days: Last 7 days
-polkovnik.docker_jobs.current_month: This month
-polkovnik.docker_jobs.last_month: Last month
+iterative_code.docker_jobs.all_period: All time
+iterative_code.docker_jobs.last_hour: Last hour
+iterative_code.docker_jobs.today: Last 24 hours
+iterative_code.docker_jobs.last_7_days: Last 7 days
+iterative_code.docker_jobs.current_month: This month
+iterative_code.docker_jobs.last_month: Last month
 
 # Jobs
-polkovnik.docker_jobs.state: Status
-polkovnik.docker_jobs.jobs: Jobs
-polkovnik.docker_jobs.jobs.new: New jobs
-polkovnik.docker_jobs.jobs.pending: Pending jobs
-polkovnik.docker_jobs.jobs.running: Running jobs
-polkovnik.docker_jobs.jobs.finished: Finished jobs
-polkovnik.docker_jobs.jobs.failed: Failed jobs
-polkovnik.docker_jobs.jobs.stopped: Stopped jobs
-polkovnik.docker_jobs.jobs.per_period: Jobs by period
-polkovnik.docker_jobs.jobs.all: All jobs
+iterative_code.docker_jobs.state: Status
+iterative_code.docker_jobs.jobs: Jobs
+iterative_code.docker_jobs.jobs.new: New jobs
+iterative_code.docker_jobs.jobs.pending: Pending jobs
+iterative_code.docker_jobs.jobs.running: Running jobs
+iterative_code.docker_jobs.jobs.finished: Finished jobs
+iterative_code.docker_jobs.jobs.failed: Failed jobs
+iterative_code.docker_jobs.jobs.stopped: Stopped jobs
+iterative_code.docker_jobs.jobs.per_period: Jobs by period
+iterative_code.docker_jobs.jobs.per_status: Jobs by status
+iterative_code.docker_jobs.jobs.all: All jobs
 
 # States
-polkovnik.docker_jobs.state.new: New
-polkovnik.docker_jobs.state.pending: Pending
-polkovnik.docker_jobs.state.canceled: Canceled
-polkovnik.docker_jobs.state.running: Running
-polkovnik.docker_jobs.state.finished: Finished
-polkovnik.docker_jobs.state.failed: Failed
-polkovnik.docker_jobs.state.stopped: Stopped
+iterative_code.docker_jobs.state.new: New
+iterative_code.docker_jobs.state.pending: Pending
+iterative_code.docker_jobs.state.canceled: Canceled
+iterative_code.docker_jobs.state.running: Running
+iterative_code.docker_jobs.state.finished: Finished
+iterative_code.docker_jobs.state.failed: Failed
+iterative_code.docker_jobs.state.stopped: Stopped
 
 # Latest states
-polkovnik.docker_jobs.jobs.latest_running: Latest running jobs
-polkovnik.docker_jobs.jobs.latest_finished: Latest finished jobs
-polkovnik.docker_jobs.jobs.latest_failed: Latest failed jobs
+iterative_code.docker_jobs.jobs.latest_running: Latest running jobs
+iterative_code.docker_jobs.jobs.latest_finished: Latest finished jobs
+iterative_code.docker_jobs.jobs.latest_failed: Latest failed jobs
 
 # Queues
-polkovnik.docker_jobs.queue: Queue
-polkovnik.docker_jobs.queue.all: All queues
+iterative_code.docker_jobs.queue: Queue
+iterative_code.docker_jobs.queue.all: All queues
 default: default
 
 # Fields
-polkovnik.docker_jobs.fields.job_id.label: ID
-polkovnik.docker_jobs.fields.command.label: Command
-polkovnik.docker_jobs.fields.createdAt.label: Created At
-polkovnik.docker_jobs.fields.startedAt.label: Started At
-polkovnik.docker_jobs.fields.runtime.label: Duration
-polkovnik.docker_jobs.fields.stoppedAt.label: Stopped At
-polkovnik.docker_jobs.fields.state.label: Status
-polkovnik.docker_jobs.fields.submit.label: Submit
+iterative_code.docker_jobs.fields.job_id.label: ID
+iterative_code.docker_jobs.fields.command.label: Command
+iterative_code.docker_jobs.fields.createdAt.label: Created At
+iterative_code.docker_jobs.fields.startedAt.label: Started At
+iterative_code.docker_jobs.fields.runtime.label: Duration
+iterative_code.docker_jobs.fields.stoppedAt.label: Stopped At
+iterative_code.docker_jobs.fields.state.label: Status
+iterative_code.docker_jobs.fields.submit.label: Submit
 
 # Actions
-polkovnik.docker_jobs.actions.label: Actions
-polkovnik.docker_jobs.actions.show.label: Show
-polkovnik.docker_jobs.actions.cancel.label: Cancel
-polkovnik.docker_jobs.actions.stop.label: Stop
-polkovnik.docker_jobs.actions.submit_job: Submit new job
-polkovnik.docker_jobs.form: Job information
+iterative_code.docker_jobs.actions.label: Actions
+iterative_code.docker_jobs.actions.show.label: Show
+iterative_code.docker_jobs.actions.cancel.label: Cancel
+iterative_code.docker_jobs.actions.stop.label: Stop
+iterative_code.docker_jobs.actions.submit_job: Submit new job
+iterative_code.docker_jobs.form: Job information
 
 # Pagination
-polkovnik.docker_jobs.pagination.previous.label: Previous
-polkovnik.docker_jobs.pagination.next.label: Next
-polkovnik.docker_jobs.pagination.statistics_text: Showing %from% to %to% of %total% entries
+iterative_code.docker_jobs.pagination.previous.label: Previous
+iterative_code.docker_jobs.pagination.next.label: Next
+iterative_code.docker_jobs.pagination.statistics_text: Showing %from% to %to% of %total% entries
 
 # Execution
-polkovnik.docker_jobs.execution.label: Runtime information
-polkovnik.docker_jobs.execution.worker: Worker
-polkovnik.docker_jobs.exit_code: Exit Code
-polkovnik.docker_jobs.error_message: Error message
-polkovnik.docker_jobs.cpu: CPU Usage
-polkovnik.docker_jobs.memory_usage: Memory Usage
-polkovnik.docker_jobs.memory_used: Used memory
-polkovnik.docker_jobs.memory_limit:  Memory limit
+iterative_code.docker_jobs.execution.label: Runtime information
+iterative_code.docker_jobs.execution.worker: Worker
+iterative_code.docker_jobs.exit_code: Exit Code
+iterative_code.docker_jobs.error_message: Error message
+iterative_code.docker_jobs.cpu: CPU Usage
+iterative_code.docker_jobs.memory_usage: Memory Usage
+iterative_code.docker_jobs.memory_used: Used memory
+iterative_code.docker_jobs.memory_limit:  Memory limit
 
-polkovnik.docker_jobs.image.label: Docker Image ID
-polkovnik.docker_jobs.container_id.label: Docker Container ID
-polkovnik.docker_jobs.logs: Logs
-polkovnik.docker_jobs.environment-variables: Environment Variables
-polkovnik.docker_jobs.resource-utilization: Resource Utilization
+iterative_code.docker_jobs.image.label: Docker Image ID
+iterative_code.docker_jobs.container_id.label: Docker Container ID
+iterative_code.docker_jobs.logs: Logs
+iterative_code.docker_jobs.environment-variables: Environment Variables
+iterative_code.docker_jobs.resource-utilization: Resource Utilization
 
-polkovnik.docker_jobs.auto_refresh: Auto-refresh
-polkovnik.docker_jobs.stop_auto_refresh: Stop Auto-refresh
+iterative_code.docker_jobs.auto_refresh: Auto-refresh
+iterative_code.docker_jobs.stop_auto_refresh: Stop Auto-refresh
 
 
 # ADS
-polkovnik.docker_jobs.ads.do_you_like: Do you like this bundle ?
-polkovnik.docker_jobs.ads.consider_star: Consider leaving a star on
-polkovnik.docker_jobs.ads.leave_star: Leave a star
+iterative_code.docker_jobs.ads.do_you_like: Do you like this bundle ?
+iterative_code.docker_jobs.ads.consider_star: Consider leaving a star on
+iterative_code.docker_jobs.ads.leave_star: Leave a star

@@ -37,29 +37,29 @@
         <div class="d-sm-flex align-items-center justify-content-between flex-direction-column mb-4">
             <div class="">
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">{{ 'polkovnik.docker_jobs.jobs' | trans }}</h1>
+                <h1 class="h3 mb-2 text-gray-800">{{ 'iterative_code.docker_jobs.jobs' | trans }}</h1>
             </div>
 
             <div id="filter-fields" class="d-none d-lg-block">
                 <div class="d-none d-lg-inline-block d-md-inline-block mr-1">
-                    <input type="text" class="form-control" id="idFilter" placeholder="{{ 'polkovnik.docker_jobs.fields.job_id.label' | trans }}" value="{{ selectedId | default }}" style="max-width: 70px;">
+                    <input type="text" class="form-control" id="idFilter" placeholder="{{ 'iterative_code.docker_jobs.fields.job_id.label' | trans }}" value="{{ selectedId | default }}" style="max-width: 70px;">
                 </div>
 
                 <div class="d-none d-sm-none d-lg-inline-block d-md-inline-block mr-1">
-                    <input type="text" class="form-control" id="commandFilter" placeholder="{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}" value="{{ selectedCommand | default }}" style="max-width: 200px;">
+                    <input type="text" class="form-control" id="commandFilter" placeholder="{{ 'iterative_code.docker_jobs.fields.command.label' | trans }}" value="{{ selectedCommand | default }}" style="max-width: 200px;">
                 </div>
 
                 <div class="d-none d-sm-block d-md-inline-block d-lg-inline-block mr-1">
                     <select class="form-control" id="stateSelector">
-                        <option value="all">{{ 'polkovnik.docker_jobs.state' | trans }}</option>
+                        <option value="all">{{ 'iterative_code.docker_jobs.state' | trans }}</option>
                         {% for state in states %}
-                            <option value="{{ state }}" {% if selectedState == state %}selected{% endif %}>{{ ('polkovnik.docker_jobs.state.'~ state) | trans }}</option>
+                            <option value="{{ state }}" {% if selectedState == state %}selected{% endif %}>{{ ('iterative_code.docker_jobs.state.'~ state) | trans }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="d-none d-sm-inline-block mr-1">
                     <select class="form-control" id="queueSelector">
-                        <option value="all">{{ 'polkovnik.docker_jobs.queue.all' | trans }}</option>
+                        <option value="all">{{ 'iterative_code.docker_jobs.queue.all' | trans }}</option>
                         {% for queue in queues %}
                             <option value="{{ queue }}" {% if selectedQueue == queue %}selected{% endif %}>{{ queue | trans | capitalize }}</option>
                         {% endfor %}
@@ -82,35 +82,35 @@
         <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">{{ pagination.total }} {{ 'polkovnik.docker_jobs.jobs_found' | trans }}</h6>
+                <h6 class="m-0 font-weight-bold text-primary">{{ pagination.total }} {{ 'iterative_code.docker_jobs.jobs_found' | trans }}</h6>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                         <tr>
-                            <th>{{ 'polkovnik.docker_jobs.fields.job_id.label' | trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.command.label' | trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.createdAt.label'| trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.startedAt.label'| trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.runtime.label'| trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.stoppedAt.label'| trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.fields.state.label'| trans }}</th>
-                            <th>{{ 'polkovnik.docker_jobs.actions.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.job_id.label' | trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.command.label' | trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.createdAt.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.startedAt.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.runtime.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.stoppedAt.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.fields.state.label'| trans }}</th>
+                            <th>{{ 'iterative_code.docker_jobs.actions.label'| trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
                             {% for job in pagination.jobs %}
                                 <tr class="clickable">
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}"><strong>{{ job.id }}</strong></td>
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.command }}</td>
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.createdAt | date('H:i:s d/m/y') }}</td>
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.startedAt | date('H:i:s d/m/y') }}</td>
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ get_job_runtime(job) }}</td>
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.stoppedAt | date('H:i:s d/m/y') }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}"><strong>{{ job.id }}</strong></td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.command }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.createdAt | date('H:i:s d/m/y') }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.startedAt | date('H:i:s d/m/y') }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">{{ get_job_runtime(job) }}</td>
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}">{{ job.stoppedAt | date('H:i:s d/m/y') }}</td>
                                     {% set statusContainerId = 'jobs-status-' ~ loop.index %}
-                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" id="{{ statusContainerId }}">
-                                        {% set key = 'polkovnik.docker_jobs.state.' ~ job.state %}
+                                    <td class="clickable" onclick="clickHandler(this)" data-href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}" id="{{ statusContainerId }}">
+                                        {% set key = 'iterative_code.docker_jobs.state.' ~ job.state %}
                                         {% if job.state == 'new' %}
                                             <div class="key-value text-secondary">
                                                 <i class="fas fa-clock"></i>
@@ -150,11 +150,11 @@
                                     <td>
                                         {% if job.state == 'new' or job.state == 'pending' %}
                                             <button class="cancel-btn btn btn-danger modernize" onclick="cancelJob(this, '{{ statusContainerId | raw }}', '{{ job.id | raw }}')">
-                                                {{ 'polkovnik.docker_jobs.actions.cancel.label' | trans }}
+                                                {{ 'iterative_code.docker_jobs.actions.cancel.label' | trans }}
                                             </button>
                                         {% endif %}
-                                        <a href="{{ path('polkovnik.docker_jobs.jobs.details', {id: job.id}) }}" class="btn btn-primary modernize">
-                                            {{ 'polkovnik.docker_jobs.actions.show.label' | trans }}
+                                        <a href="{{ path('iterative_code.docker_jobs.jobs.details', {id: job.id}) }}" class="btn btn-primary modernize">
+                                            {{ 'iterative_code.docker_jobs.actions.show.label' | trans }}
                                         </a>
                                     </td>
                                 </tr>
@@ -170,7 +170,7 @@
                             {% set to = pagination.to %}
                             {% set total = pagination.total %}
 
-                            {{ 'polkovnik.docker_jobs.pagination.statistics_text' | trans({ '%from%': from, '%to%': to, '%total%': total }) }}
+                            {{ 'iterative_code.docker_jobs.pagination.statistics_text' | trans({ '%from%': from, '%to%': to, '%total%': total }) }}
                         </div>
                     </div>
 
@@ -184,12 +184,12 @@
                                             {% set previousPages = 1 %}
                                         {% endif %}
                                         {% set selectedPageValues = selectedValues | merge({ page: previousPage }) %}
-                                        <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'polkovnik.docker_jobs.pagination.previous.label' | trans }}</a>
+                                        <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'iterative_code.docker_jobs.pagination.previous.label' | trans }}</a>
                                     </li>
                                     {% for i in range(1, pagination.totalPages) %}
                                         <li class="paginate_button page-item {% if i == pagination.currentPage %}active{% endif %}">
                                             {% set selectedPageValues = selectedValues | merge({ page: i }) %}
-                                            <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ i }}</a>
+                                            <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ i }}</a>
                                         </li>
                                     {% endfor %}
                                     <li class="paginate_button page-item next {% if pagination.currentPage == pagination.totalPages %}disabled{% endif %}" id="dataTable_next">
@@ -198,7 +198,7 @@
                                             {% set nextPage = pagination.totalPages %}
                                         {% endif %}
                                         {% set selectedPageValues = selectedValues | merge({ page: nextPage }) %}
-                                        <a href="{{ path('polkovnik.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'polkovnik.docker_jobs.pagination.next.label' | trans }}</a>
+                                        <a href="{{ path('iterative_code.docker_jobs.jobs.explorer', { filters: selectedPageValues | json_encode | raw }) }}" class="page-link">{{ 'iterative_code.docker_jobs.pagination.next.label' | trans }}</a>
                                     </li>
                                 </ul>
                             </div>
@@ -256,7 +256,7 @@
         function cancelJob(element, statusContainerId, id) {
             $.ajax({
                 method: 'DELETE',
-                url: "{{ path('polkovnik.docker_jobs.jobs.cancel', {id: 1}) }}".replace('1', id),
+                url: "{{ path('iterative_code.docker_jobs.jobs.cancel', {id: 1}) }}".replace('1', id),
                 success: (result) => {
                     if (result.status === 200) {
                         $(element).remove();
@@ -266,9 +266,9 @@
 
                         {#statusContainer.addClass('status-badge')#}
                         {#statusContainer.addClass('canceled')#}
-                        {#statusContainer.text('{{ 'polkovnik.docker_jobs.state.canceled' | trans }}');#}
+                        {#statusContainer.text('{{ 'iterative_code.docker_jobs.state.canceled' | trans }}');#}
 
-                        {% set key = 'polkovnik.docker_jobs.state.canceled' %}
+                        {% set key = 'iterative_code.docker_jobs.state.canceled' %}
                         let html = `<div class="key-value text-warning modernize">
                                         {{ key | trans }}
                                     </div>`;

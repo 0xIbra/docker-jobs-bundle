@@ -1,8 +1,8 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\DependencyInjection;
+namespace IterativeCode\DockerJobsBundle\DependencyInjection;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
@@ -47,7 +47,7 @@ class DockerJobsExtension extends Extension
         $container->setParameter('docker_jobs.docker.time_difference', $config['docker']['time_difference']);
 
         $this->addAnnotatedClassesToCompile([
-            'Polkovnik\\DockerJobsBundle\\Controller\\MonitoringController'
+            'IterativeCode\\DockerJobsBundle\\Controller\\MonitoringController'
         ]);
     }
 }

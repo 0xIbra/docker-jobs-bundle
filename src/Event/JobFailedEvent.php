@@ -1,13 +1,13 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Event;
+namespace IterativeCode\DockerJobsBundle\Event;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class JobFailedEvent extends Event
 {
-    public const CODE = 'polkovnik.docker_jobs.events.job.failed';
+    public const CODE = 'iterative_code.docker_jobs.events.job.failed';
 
     /** @var BaseJob */
     protected $job;

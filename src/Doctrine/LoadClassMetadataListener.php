@@ -1,6 +1,6 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Doctrine;
+namespace IterativeCode\DockerJobsBundle\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\Common\Persistence\Event\LoadClassMetadataEventArgs;

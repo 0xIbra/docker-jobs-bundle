@@ -1,15 +1,15 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Controller;
+namespace IterativeCode\DockerJobsBundle\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Entity\Repository\BaseJobRepository;
-use Polkovnik\DockerJobsBundle\Event\JobCanceledEvent;
-use Polkovnik\DockerJobsBundle\Event\JobStoppedEvent;
-use Polkovnik\DockerJobsBundle\Event\JobSubmittedEvent;
-use Polkovnik\DockerJobsBundle\Form\SubmitType;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\Repository\BaseJobRepository;
+use IterativeCode\DockerJobsBundle\Event\JobCanceledEvent;
+use IterativeCode\DockerJobsBundle\Event\JobStoppedEvent;
+use IterativeCode\DockerJobsBundle\Event\JobSubmittedEvent;
+use IterativeCode\DockerJobsBundle\Form\SubmitType;
 use Psr\Container\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -42,7 +42,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/dashboard",
-     *     name="polkovnik.docker_jobs.index",
+     *     name="iterative_code.docker_jobs.index",
      *     methods={"GET"}
      * )
      */
@@ -88,7 +88,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs",
-     *     name="polkovnik.docker_jobs.jobs.explorer",
+     *     name="iterative_code.docker_jobs.jobs.explorer",
      *     methods={"GET"}
      * )
      */
@@ -155,7 +155,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/{id}/cancel",
-     *     name="polkovnik.docker_jobs.jobs.cancel",
+     *     name="iterative_code.docker_jobs.jobs.cancel",
      *     methods={"DELETE"},
      *     requirements={"id": "\d+"}
      * )
@@ -206,7 +206,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/{id}",
-     *     name="polkovnik.docker_jobs.jobs.details",
+     *     name="iterative_code.docker_jobs.jobs.details",
      *     methods={"GET"},
      *     requirements={"id": "\d+"}
      * )
@@ -236,7 +236,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/{id}/details",
-     *     name="polkovnik.docker_jobs.jobs.details.json",
+     *     name="iterative_code.docker_jobs.jobs.details.json",
      *     methods={"GET"},
      *     requirements={"id": "\d+"}
      * )
@@ -254,7 +254,7 @@ class MonitoringController extends AbstractController
             'state' => $job->getState(),
         ];
 
-        $docker = $this->container->get('polkovnik.docker_jobs.service.docker');
+        $docker = $this->container->get('iterative_code.docker_jobs.service.docker');
         $startedAt = $job->getStartedAt();
         $stoppedAt = $job->getStoppedAt();
         if ($stoppedAt === null) {
@@ -285,7 +285,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/{id}/stop",
-     *     name="polkovnik.docker_jobs.jobs.stop",
+     *     name="iterative_code.docker_jobs.jobs.stop",
      *     methods={"POST"},
      *     requirements={"id": "\d+"}
      * )
@@ -308,7 +308,7 @@ class MonitoringController extends AbstractController
             ]);
         }
 
-        $docker = $this->container->get('polkovnik.docker_jobs.service.docker');
+        $docker = $this->container->get('iterative_code.docker_jobs.service.docker');
         try {
             $containerId = $job->getDockerContainerId();
             $container = $docker->getClient()->inspectContainer($containerId);
@@ -347,7 +347,7 @@ class MonitoringController extends AbstractController
     /**
      * @Route(
      *     "/jobs/new/submit",
-     *     name="polkovnik.docker_jobs.jobs.submit",
+     *     name="iterative_code.docker_jobs.jobs.submit",
      *     methods={"GET", "POST"}
      * )
      */
@@ -371,7 +371,7 @@ class MonitoringController extends AbstractController
             $event->setJob($job);
             $this->eventDispatcher->dispatch($event->getCode(), $event);
 
-            return $this->redirectToRoute('polkovnik.docker_jobs.jobs.details', ['id' => $job->getId()]);
+            return $this->redirectToRoute('iterative_code.docker_jobs.jobs.details', ['id' => $job->getId()]);
         }
 
         return $this->render('@DockerJobs/Job/submit.html.twig', [
