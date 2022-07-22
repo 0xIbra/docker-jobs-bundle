@@ -5,7 +5,7 @@ namespace IterativeCode\DockerJobsBundle\Entity\Repository;
 use App\Entity\Job;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use iterative_code\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 
 class BaseJobRepository extends EntityRepository
 {

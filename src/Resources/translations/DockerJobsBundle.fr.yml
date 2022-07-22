@@ -22,6 +22,7 @@ iterative_code.docker_jobs.jobs.finished: Jobs finis
 iterative_code.docker_jobs.jobs.failed: Jobs en échec
 iterative_code.docker_jobs.jobs.stopped: Jobs arrêtés
 iterative_code.docker_jobs.jobs.per_period: Jobs par période
+iterative_code.docker_jobs.jobs.per_status: Jobs par statut
 iterative_code.docker_jobs.jobs.all: Tous les jobs
 
 # States
