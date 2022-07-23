@@ -1,10 +1,10 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Command;
+namespace IterativeCode\DockerJobsBundle\Command;
 
 use Doctrine\ORM\EntityNotFoundException;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Service\DockerService;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Service\DockerService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,7 +30,7 @@ class StopJobCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:jobs:stop')
+            ->setName('iterative_code:jobs:stop')
             ->setDescription('Terminates a running job.')
             ->addOption('--job-id', '-j', InputOption::VALUE_REQUIRED, 'Job ID')
         ;

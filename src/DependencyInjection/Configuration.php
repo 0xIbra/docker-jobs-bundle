@@ -1,6 +1,6 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\DependencyInjection;
+namespace IterativeCode\DockerJobsBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

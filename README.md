@@ -30,7 +30,17 @@ So, if you need to connect to a local database, you can with the usual `localhos
 Installation
 ------------
 
-    composer require polkovnik-z/docker-jobs-bundle
+##### 1. Before installing the bundle, you need the install the php driver for Docker API
+You need to install the same version of the driver as the version of the Docker engine API version.  
+To find out the version of the Docker API, do `docker version | grep 'API version'`.  
+In my case, the version is `1.41`
+
+    composer require ibra-akv/php-docker-client:1.41.*
+
+##### 2. Install the bundle
+Now you can install the bundle:
+
+    composer require ibra-akv/docker-jobs-bundle
 
 
 Configuration
@@ -55,7 +65,7 @@ You must create your Job entity and extend of BaseJob class.
 
 namespace App\Entity;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 
 class Job extends BaseJob
 {
@@ -112,7 +122,7 @@ If not already done, include the bundle to your project:
 return [
  Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
  ...
- Polkovnik\DockerJobsBundle\DockerJobsBundle::class => ['all' => true],
+ IterativeCode\DockerJobsBundle\DockerJobsBundle::class => ['all' => true],
 ];
 
 # Symfony 3
@@ -122,7 +132,7 @@ $bundles = array(
  new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
  new Symfony\Bundle\SecurityBundle\SecurityBundle(),
  ...
- new Polkovnik\DockerJobsBundle\DockerJobsBundle(),
+ new IterativeCode\DockerJobsBundle\DockerJobsBundle(),
 )
 
 ```

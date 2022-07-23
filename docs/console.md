@@ -12,13 +12,13 @@ There are a few commands to perform various actions.
 This command is the core function of this bundle, it is this command that will run and handle all your jobs.  
 
 
-Command: `polkovnik:jobs:orchestrate`  
+Command: `iterative_code:jobs:orchestrate`  
 
     Description:
       Orchestrates Docker containers and handles them in their different stages.
 
     Usage:
-      polkovnik:jobs:orchestrate [options]
+      iterative_code:jobs:orchestrate [options]
 
     Options:
           --queue[=QUEUE]                          Queue to process.
@@ -39,7 +39,7 @@ Making supervisor restart the command every 15 minutes will keep the command fre
  > `/etc/supervisor/conf.d/docker_jobs_orchestration.conf`
 ```apacheconf
 [program:docker_jobs_orchestration]
-command=php /path/to/symfony-project/bin/console polkovnik:jobs:orchestrate --env=prod
+command=php /path/to/symfony-project/bin/console iterative_code:jobs:orchestrate --env=prod
 process_name=%(program_name)s
 numprocs=1
 directory=/tmp
@@ -71,14 +71,14 @@ If your job is to run a symfony command let's assume `my:command:run`, the full 
 `bin/console my:command:run` If your `container_working_dir` is set to your project.  
 If not, `/path/to/symfony_project/bin/console my:command:run`.
 
-Command: `polkovnik:jobs:submit`
+Command: `iterative_code:jobs:submit`
 
     Description:
       Creates a new job and submits it to a queue for processing.
 
     Usage:
-      polkovnik:jobs:submit [options]
-      polkovnik:jobs:submit --command "run:my:command --arg1=yes"
+      iterative_code:jobs:submit [options]
+      iterative_code:jobs:submit --command "run:my:command --arg1=yes"
 
     Options:
           --command=COMMAND                    command to execute.
@@ -92,14 +92,14 @@ Command: `polkovnik:jobs:submit`
 ## Stop job command
 This command let's you stop a running job.
 
-Command: `polkovnik:jobs:stop`
+Command: `iterative_code:jobs:stop`
 
     Description:
       Terminates a running job.
 
     Usage:
-      polkovnik:jobs:stop [options]
-      polkovnik:jobs:stop --job-id 330
+      iterative_code:jobs:stop [options]
+      iterative_code:jobs:stop --job-id 330
 
     Options:
       -j, --job-id=JOB-ID   Job ID
@@ -113,15 +113,15 @@ What are orphan jobs ?
 Well, they are jobs that have "running" state but have no container that is executing them.
 These jobs can be provoked by manually stopping/deleting the container, system reload, or if ever, Docker engine crashes.
 
-Command: `polkovnik:jobs:clean`
+Command: `iterative_code:jobs:clean`
 
     Description:
       Removes orphan jobs from the running state.
 
     Usage:
-      polkovnik:jobs:clean [options]
-      polkovnik:jobs:clean --queue notifications
-      polkovnik:jobs:clean --dry-run
+      iterative_code:jobs:clean [options]
+      iterative_code:jobs:clean --queue notifications
+      iterative_code:jobs:clean --dry-run
 
     Options:
           --queue[=QUEUE]      Queue from which will be removed orphan jobs.

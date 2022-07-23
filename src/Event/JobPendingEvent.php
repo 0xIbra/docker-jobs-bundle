@@ -1,13 +1,13 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Event;
+namespace IterativeCode\DockerJobsBundle\Event;
 
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class JobPendingEvent extends Event
 {
-    public const CODE = 'polkovnik.docker_jobs.events.job.pending';
+    public const CODE = 'iterative_code.docker_jobs.events.job.pending';
 
     /** @var BaseJob */
     protected $job;

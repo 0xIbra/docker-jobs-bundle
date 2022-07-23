@@ -1,20 +1,19 @@
 <?php
 
-namespace Polkovnik\DockerJobsBundle\Command;
+namespace IterativeCode\DockerJobsBundle\Command;
 
 use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
-use Polkovnik\Component\DockerClient\Exception\ResourceBusyException;
-use Polkovnik\Component\DockerClient\Exception\ResourceNotFound;
-use Polkovnik\DockerClient;
-use Polkovnik\DockerJobsBundle\Entity\BaseJob;
-use Polkovnik\DockerJobsBundle\Entity\Repository\BaseJobRepository;
-use Polkovnik\DockerJobsBundle\Event\JobFailedEvent;
-use Polkovnik\DockerJobsBundle\Event\JobFinishedEvent;
-use Polkovnik\DockerJobsBundle\Event\JobRunningEvent;
-use Polkovnik\DockerJobsBundle\Event\JobStoppedEvent;
-use Polkovnik\DockerJobsBundle\Exception\DockerImageNotFoundException;
-use Polkovnik\DockerJobsBundle\Service\DockerService;
+use IterativeCode\Component\DockerClient\Exception\ResourceBusyException;
+use IterativeCode\Component\DockerClient\Exception\ResourceNotFound;
+use IterativeCode\DockerJobsBundle\Entity\BaseJob;
+use IterativeCode\DockerJobsBundle\Entity\Repository\BaseJobRepository;
+use IterativeCode\DockerJobsBundle\Event\JobFailedEvent;
+use IterativeCode\DockerJobsBundle\Event\JobFinishedEvent;
+use IterativeCode\DockerJobsBundle\Event\JobRunningEvent;
+use IterativeCode\DockerJobsBundle\Event\JobStoppedEvent;
+use IterativeCode\DockerJobsBundle\Exception\DockerImageNotFoundException;
+use IterativeCode\DockerJobsBundle\Service\DockerService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -80,7 +79,7 @@ class JobOrchestrationCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('polkovnik:jobs:orchestrate')
+            ->setName('iterative_code:jobs:orchestrate')
             ->setDescription('Orchestrates Docker containers and handles them in their different stages.')
             ->addOption('queue', null, InputOption::VALUE_OPTIONAL, 'Queue to process.')
             ->addOption('update-logs-eager', null, InputOption::VALUE_OPTIONAL, 'When enabled, updates the logs of running jobs every few seconds, otherwise only updates at the end of the job.', true)
