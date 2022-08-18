@@ -31,6 +31,7 @@ class DockerService
     {
         $this->container = $container;
 
+        $options = [];
         if (null !== $dockerApiEndpoint) {
             $options['docker_base_uri'] = $dockerApiEndpoint;
         }
