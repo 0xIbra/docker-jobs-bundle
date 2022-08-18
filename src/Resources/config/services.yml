@@ -4,8 +4,7 @@ services:
     class: IterativeCode\DockerJobsBundle\Service\DockerService
     arguments:
       - '@service_container'
-      - '%docker_jobs.docker.unix_socket_path%'
-      - '%docker_jobs.docker.api_base_uri%'
+      - '%docker_jobs.docker.docker_api_endpoint%'
 
   iterative_code.docker_jobs.manager.job:
     public: true
