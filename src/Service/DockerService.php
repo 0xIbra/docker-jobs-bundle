@@ -27,16 +27,12 @@ class DockerService
     /** @var JobManager */
     private $jobManager;
 
-    public function __construct(ContainerInterface $container, string $dockerUnixSocket, string $dockerBaseUri = null)
+    public function __construct(ContainerInterface $container, string $dockerApiEndpoint = null)
     {
         $this->container = $container;
 
-        $options = [
-            'unix_socket' => $dockerUnixSocket,
-        ];
-
-        if (null !== $dockerBaseUri) {
-            $options['docker_base_uri'] = $dockerBaseUri;
+        if (null !== $dockerApiEndpoint) {
+            $options['docker_base_uri'] = $dockerApiEndpoint;
         }
 
         $isJob = getenv(self::DOCKER_JOB_IDENTIFYING_ENV);
