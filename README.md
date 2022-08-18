@@ -5,12 +5,10 @@ Docker Jobs Bundle
 Uses Docker containers to run and handle your jobs.
 
 * [Need to know](#need-to-know)
+* [Docker Configuration](#docker-configuration)
 * [Installation](#installation)
 * [Configuration](#configuration)
  * [Job Entity](#job-entity)
- * [Docker Configuration](#docker-configuration)
-   * [Docker socket permission](#docker-socket-permission)
-   * [Docker Image](#docker-image)
  * [Bundle Configuration](#bundle-configuration)
 * [Next steps](#next-steps)
   * [Console commands](docs/console.md)
@@ -27,18 +25,56 @@ All containers started by this bundle, are by default on the host's network.
 So, if you need to connect to a local database, you can with the usual `localhost|127.0.0.1`.
 
 
+Docker configuration
+--------------------
+Docker Engine API must be exposed on a local port in order to be able to connect.
+
+##### 1. Edit the `docker.service` which by default on debian is located at `/lib/systemd/system/docker.service`
+
+From this:
+```shell
+# /lib/systemd/system/docker.service
+...
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+...
+```
+
+To this:
+```shell
+# /lib/systemd/system/docker.service
+...
+ExecStart=/usr/bin/dockerd
+...
+```
+
+##### 2. Edit `/etc/docker/daemon.json` to expose docker api at `127.0.0.1:2375`
+Add `hosts` to the json file as next:
+```json
+{
+  ...
+  "hosts": ["fd://", "tcp://127.0.0.1:2375"]
+  ...
+}
+```
+
+##### 3. Restart Docker completely
+```shell
+systemctl daemon-reload
+systemctl restart docker
+service docker restart
+```
+
+#### Docker Image
+
+If not already done, you must create a Docker image which will be used to execute your jobs.
+
+This bundle allows use of different images for each job but requires a default image to fallback on when no docker image is specified at launch.
+
+
 Installation
 ------------
 
-##### 1. Before installing the bundle, you need the install the php driver for Docker API
-You need to install the same version of the driver as the version of the Docker engine API version.  
-To find out the version of the Docker API, do `docker version | grep 'API version'`.  
-In my case, the version is `1.41`
-
-    composer require ibra-akv/php-docker-client:1.41.*
-
-##### 2. Install the bundle
-Now you can install the bundle:
+##### Install the bundle
 
     composer require ibra-akv/docker-jobs-bundle
 
@@ -48,9 +84,6 @@ Configuration
 The configuration process is a bit lengthy, follow all the steps shown below.
 
 * [Job Entity](#job-entity)
-* [Docker Configuration](#docker-configuration)
- * [Docker socket permission](#docker-socket-permission)
- * [Docker Image](#docker-image)
 * [Bundle Configuration](#bundle-configuration)
 
 
@@ -73,40 +106,6 @@ class Job extends BaseJob
 
 ```
 As long as you extend it of `BaseJob`, the bundle will work correctly.
-
---------------------------------------------------------------------------------
-
-
-### Docker configuration
-For this bundle to work, 2 actions you must perform.
-
-If the **Docker socket permission** step is not completed,  
-the bundle will throw an **exception** as it is not able to connect to **Docker**.
-
-<br>
-
-#### Docker socket permission
-
-By default, in most cases, **PHP** does not have permission to access the docker socket
-which by default on linux is located at `/var/run/docker.sock`.
-
-For **PHP** to be able to bind to this socket and perform http requests,
-you must give the necessary permissions.
-
-**Easiest way**  
-`sudo chmod 777 /var/run/docker.sock`  
-By doing this, you give everyone read-write-execute permissions to this file to **everyone**.
-
-**Hard way**  
-If you are concerned with security, then you can give these permissions only to the **PHP** user.
-
-<br>
-
-#### Docker Image
-
-If not already done, you must create a Docker image which will be used to execute your jobs.  
-
-This bundle allows use of different images for each job but requires a default image to fallback on when no docker image is specified at launch.
 
 --------------------------------------------------------------------------------
 
@@ -149,9 +148,9 @@ docker_jobs:
    job: App\Entity\Job # Required
 
  docker:
-   # This is the docker daemon socket
-   # If you haven't touched the Docker config, it should be "/var/run/docker.sock" by default
-   unix_socket_path: '/var/run/docker.sock' # Required
+   # The URI where Docker Engine API is exposed
+   # The bundle will use this endpoint to communicate with Docker
+   docker_api_endpoint: 'http://127.0.0.1:2375' # optional (default: http://localhost:2375)
 
    # Default docker image ID for job execution
    # You can specify docker image when creating a job, this image will be used if no image is specified at creation.
