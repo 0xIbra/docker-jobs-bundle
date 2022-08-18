@@ -33,7 +33,7 @@ class DockerService
 
         $options = [];
         if (null !== $dockerApiEndpoint) {
-            $options['docker_base_uri'] = $dockerApiEndpoint;
+            $options['local_endpoint'] = $dockerApiEndpoint;
         }
 
         $isJob = getenv(self::DOCKER_JOB_IDENTIFYING_ENV);
