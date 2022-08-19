@@ -17,7 +17,7 @@
         }
     },
     "require": {
-        "ibra-akv/php-docker-client": "^2.41",
+        "ibra-akv/php-docker-client": "^3.41",
         "symfony/asset": "~5.0",
         "symfony/translation": "~5.0",
         "symfony/form": "~5.0"
