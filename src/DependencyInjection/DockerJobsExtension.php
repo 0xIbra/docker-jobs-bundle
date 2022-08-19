@@ -26,10 +26,6 @@ class DockerJobsExtension extends Extension
             throw new InvalidConfigurationException('"docker_jobs.class.job" parameter must be defined.');
         }
 
-        if (empty($config['docker']['unix_socket_path'])) {
-            throw new InvalidConfigurationException('"docker_jobs.docker.unix_socket_path" parameter must be defined.');
-        }
-
         if (empty($config['docker']['default_image_id'])) {
             throw new InvalidConfigurationException('"docker_jobs.docker.default_image_id" parameter must be defined.');
         }
@@ -40,8 +36,7 @@ class DockerJobsExtension extends Extension
 
         $container->setParameter('docker_jobs.class.job', $config['class']['job']);
         $container->setParameter('docker_jobs.runtime.concurrency_limit', $config['runtime']['concurrency_limit']);
-        $container->setParameter('docker_jobs.docker.unix_socket_path', $config['docker']['unix_socket_path']);
-        $container->setParameter('docker_jobs.docker.api_base_uri', $config['docker']['api_base_uri']);
+        $container->setParameter('docker_jobs.docker.docker_api_endpoint', $config['docker']['docker_api_endpoint']);
         $container->setParameter('docker_jobs.docker.default_image_id', $config['docker']['default_image_id']);
         $container->setParameter('docker_jobs.docker.container_working_dir', $config['docker']['container_working_dir']);
         $container->setParameter('docker_jobs.docker.time_difference', $config['docker']['time_difference']);
