@@ -195,7 +195,7 @@ class MonitoringController extends AbstractController
 
         $event = new JobCanceledEvent();
         $event->setJob($job);
-        $this->eventDispatcher->dispatch($event->getCode(), $event);
+        $this->eventDispatcher->dispatch($event, $event->getCode());
 
         return new JsonResponse([
             'status' => 200,
@@ -323,7 +323,7 @@ class MonitoringController extends AbstractController
 
                     $event = new JobStoppedEvent();
                     $event->setJob($job);
-                    $this->eventDispatcher->dispatch($event->getCode(), $event);
+                    $this->eventDispatcher->dispatch($event, $event->getCode());
 
                     return new JsonResponse([
                         'status' => 202,
@@ -369,7 +369,7 @@ class MonitoringController extends AbstractController
 
             $event = new JobSubmittedEvent();
             $event->setJob($job);
-            $this->eventDispatcher->dispatch($event->getCode(), $event);
+            $this->eventDispatcher->dispatch($event, $event->getCode());
 
             return $this->redirectToRoute('iterative_code.docker_jobs.jobs.details', ['id' => $job->getId()]);
         }

@@ -307,7 +307,7 @@ class JobOrchestrationCommand extends Command
                     $event = new JobFailedEvent();
                     $event->setJob($job);
                 }
-                $this->eventDispatcher->dispatch($event->getCode(), $event);
+                $this->eventDispatcher->dispatch($event, $event->getCode());
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
@@ -360,7 +360,7 @@ class JobOrchestrationCommand extends Command
 
         $event = new JobRunningEvent();
         $event->setJob($job);
-        $this->eventDispatcher->dispatch($event->getCode(), $event);
+        $this->eventDispatcher->dispatch($event, $event->getCode());
 
         $this->runningContainers[$id] = $id;
     }
