@@ -17,9 +17,12 @@
         }
     },
     "require": {
+        "php": ">=7.2.5",
         "ibra-akv/php-docker-client": "^3.41",
         "symfony/asset": "~5.0",
         "symfony/translation": "~5.0",
-        "symfony/form": "~5.0"
+        "symfony/form": "~5.0",
+        "symfony/twig-bundle": "~5.0",
+        "symfony/orm-pack": "*"
     }
 }
