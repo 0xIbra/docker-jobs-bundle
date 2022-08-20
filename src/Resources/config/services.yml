@@ -20,6 +20,14 @@ services:
       - { name: twig.extension }
 
   IterativeCode\DockerJobsBundle\Controller\MonitoringController:
+    arguments:
+      - '@iterative_code.docker_jobs.service.docker'
+      - '%docker_jobs.class.job%'
+      - '%docker_jobs.docker.default_image_id%'
     calls:
-      - [setContainer, ['@service_container']]
+      - [setEm, ['@doctrine.orm.entity_manager']]
+      - [setEventDispatcher, ['@event_dispatcher']]
+      - [setRouter, ['@router']]
+      - [setTwig, ['@twig']]
+      - [setFormFactory, ['@form.factory']]
     tags: ['controller.service_arguments']

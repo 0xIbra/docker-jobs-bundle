@@ -10,32 +10,41 @@ use IterativeCode\DockerJobsBundle\Event\JobCanceledEvent;
 use IterativeCode\DockerJobsBundle\Event\JobStoppedEvent;
 use IterativeCode\DockerJobsBundle\Event\JobSubmittedEvent;
 use IterativeCode\DockerJobsBundle\Form\SubmitType;
-use Psr\Container\ContainerInterface;
+use IterativeCode\DockerJobsBundle\Service\DockerService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Twig\Environment;
 
-class MonitoringController extends AbstractController
+class MonitoringController
 {
-    /** @var EntityManagerInterface */
-    private $em;
+    use HttpControllerTrait;
 
-    /** @var EventDispatcherInterface */
-    private $eventDispatcher;
+    /** @var DockerService */
+    private $docker;
 
     /** @var string */
     private $jobClass;
 
+    /** @var string */
+    private $defaultDockerImage;
+
     /** @var BaseJobRepository */
     private $jobRepository;
 
+    public function __construct(DockerService $docker, string $jobClass, string $defaultDockerImage)
+    {
+        $this->docker = $docker;
+        $this->jobClass = $jobClass;
+        $this->defaultDockerImage = $defaultDockerImage;
+    }
+
     private function init()
     {
-        $this->em = $this->container->get('doctrine')->getManager();
-        $this->eventDispatcher = $this->container->get('event_dispatcher');
-        $this->jobClass = $this->container->getParameter('docker_jobs.class.job');
         $this->jobRepository = $this->em->getRepository($this->jobClass);
     }
 
@@ -49,7 +58,6 @@ class MonitoringController extends AbstractController
     public function indexAction(Request $request)
     {
         $this->init();
-
         $period = 'today';
         if ($request->query->has('period')) {
             $period = $request->query->get('period');
@@ -95,7 +103,6 @@ class MonitoringController extends AbstractController
     public function jobsExplorerAction(Request $request)
     {
         $this->init();
-
         $periods = BaseJobRepository::getPeriods();
         $queues = $this->jobRepository->getAggregatedQueues();
         $states = BaseJob::getStates();
@@ -214,15 +221,13 @@ class MonitoringController extends AbstractController
     public function jobDetailsAction($id)
     {
         $this->init();
-
-        $em = $this->container->get('doctrine')->getManager();
-        $jobRepository = $em->getRepository($this->container->getParameter('docker_jobs.class.job'));
+        $jobRepository = $this->em->getRepository($this->jobClass);
         $job = $jobRepository->find($id);
         if ($job === null) {
             throw new EntityNotFoundException(sprintf('Job with ID %s was not found.', $id));
         }
 
-        $dockerImageId = $this->container->getParameter('docker_jobs.docker.default_image_id');
+        $dockerImageId = $this->defaultDockerImage;
         if ($job->getDockerImageId() !== null) {
             $dockerImageId = $job->getDockerImageId();
         }
@@ -244,7 +249,6 @@ class MonitoringController extends AbstractController
     public function jobUpdatedDetails($id, Request $request)
     {
         $this->init();
-
         /** @var BaseJob $job */
         $job = $this->jobRepository->find($id);
         if ($job === null) {
@@ -254,7 +258,6 @@ class MonitoringController extends AbstractController
             'state' => $job->getState(),
         ];
 
-        $docker = $this->container->get('iterative_code.docker_jobs.service.docker');
         $startedAt = $job->getStartedAt();
         $stoppedAt = $job->getStoppedAt();
         if ($stoppedAt === null) {
@@ -268,7 +271,7 @@ class MonitoringController extends AbstractController
         $containerId = $job->getDockerContainerId();
         if ($containerId !== null) {
             try {
-                $data = array_merge($docker->getContainerUsage($containerId), $data);
+                $data = array_merge($this->docker->getContainerUsage($containerId), $data);
             } catch (\Exception $e) {}
         }
 
@@ -308,13 +311,12 @@ class MonitoringController extends AbstractController
             ]);
         }
 
-        $docker = $this->container->get('iterative_code.docker_jobs.service.docker');
         try {
             $containerId = $job->getDockerContainerId();
-            $container = $docker->getClient()->inspectContainer($containerId);
+            $container = $this->docker->getClient()->inspectContainer($containerId);
 
             if ($container['State']['Status'] === 'running') {
-                $stopped = $docker->stopJob($job);
+                $stopped = $this->docker->stopJob($job);
                 if ($stopped === true) {
                     $job->setState(BaseJob::STATE_STOPPED);
                     $job->setStoppedAt(new \DateTime());
@@ -354,12 +356,10 @@ class MonitoringController extends AbstractController
     public function submitJobAction(Request $request)
     {
         $this->init();
-
-        $defaultDockerImage = $this->container->getParameter('docker_jobs.docker.default_image_id');
         $job = new $this->jobClass();
-        $job->setDockerImageId($defaultDockerImage);
+        $job->setDockerImageId($this->defaultDockerImage);
 
-        $form = $this->createForm(SubmitType::class, $job, ['dockerImageId' => $defaultDockerImage]);
+        $form = $this->createForm(SubmitType::class, $job, ['dockerImageId' => $this->defaultDockerImage]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $job = $form->getData();
