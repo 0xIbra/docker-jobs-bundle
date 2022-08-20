@@ -2,11 +2,9 @@
 
 namespace IterativeCode\DockerJobsBundle\Command;
 
-use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
 use IterativeCode\Component\DockerClient\Exception\ResourceBusyException;
 use IterativeCode\Component\DockerClient\Exception\ResourceNotFound;
-use IterativeCode\DockerClient;
 use IterativeCode\DockerJobsBundle\Entity\BaseJob;
 use IterativeCode\DockerJobsBundle\Entity\Repository\BaseJobRepository;
 use IterativeCode\DockerJobsBundle\Event\JobFailedEvent;
