@@ -2,7 +2,6 @@
 
 namespace IterativeCode\DockerJobsBundle\Command;
 
-use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
 use IterativeCode\Component\DockerClient\Exception\ResourceBusyException;
 use IterativeCode\Component\DockerClient\Exception\ResourceNotFound;
