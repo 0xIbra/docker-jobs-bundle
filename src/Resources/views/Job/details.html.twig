@@ -80,6 +80,7 @@
                                     {% elseif job.state == 'failed' %}
                                         <span class="value text-danger">
                                             <i class="far fa-times-circle"></i>
+                                            {{ key | trans }}
                                         </span>
                                     {% elseif job.state == 'stopped' %}
                                         <span class="value text-danger">
