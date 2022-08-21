@@ -311,7 +311,7 @@ class JobOrchestrationCommand extends Command
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
-                unset($this->runningContainerCount[$containerId]);
+                unset($this->runningContainers[$containerId]);
 
                 $this->updateCounters();
             }
