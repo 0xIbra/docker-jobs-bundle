@@ -2,7 +2,6 @@
 
 namespace IterativeCode\DockerJobsBundle\Command;
 
-use App\Entity\Job;
 use Doctrine\ORM\EntityManagerInterface;
 use IterativeCode\Component\DockerClient\Exception\ResourceBusyException;
 use IterativeCode\Component\DockerClient\Exception\ResourceNotFound;
@@ -312,7 +311,7 @@ class JobOrchestrationCommand extends Command
 
                 $this->em->persist($job);
                 unset($this->stoppedContainers[$containerId]);
-                unset($this->runningContainerCount[$containerId]);
+                unset($this->runningContainers[$containerId]);
 
                 $this->updateCounters();
             }
