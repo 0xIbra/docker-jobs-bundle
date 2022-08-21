@@ -75,8 +75,20 @@ Installation
 ------------
 
 ##### Install the bundle
+When installing, you must specify the correct version of the bundle which coressponds to the Symfony version of your project.
+```shell
+# Symfony 6
+composer require ibra-akv/docker-jobs-bundle:~6.0
 
-    composer require ibra-akv/docker-jobs-bundle
+# Symfony 5
+composer require ibra-akv/docker-jobs-bundle:~5.0
+
+# Symfony 4
+composer require ibra-akv/docker-jobs-bundle:~4.0
+
+# Symfony 3
+composer require ibra-akv/docker-jobs-bundle:~3.0
+```
 
 
 Configuration
